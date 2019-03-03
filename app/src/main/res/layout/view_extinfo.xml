@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:layout_gravity="center"
+    android:layout_marginBottom="5.0dip"
+    android:layout_marginTop="5.0dip"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="35.0dip"
+        android:orientation="horizontal" >
+
+        <CheckBox
+            android:id="@+id/checkDCheck"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="是否复检车辆" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="35.0dip"
+        android:orientation="horizontal" >
+
+        <CheckBox
+            android:id="@+id/checkImported"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="是否进口车辆" />
+    </LinearLayout>
+
+    <RadioGroup
+        android:id="@+id/linegroup"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:checkedButton="@id/lineOne"
+        android:orientation="horizontal" >
+        
+            <RadioButton
+                android:id="@+id/lineOne"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="1号线" />
+
+            <RadioButton
+                android:id="@+id/lineTwo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2号线" />
+      
+            <RadioButton
+                android:id="@+id/lineThree"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="3号线" />
+
+            <RadioButton
+                android:id="@+id/lineFour"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="4号线" />
+    </RadioGroup>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="45.0dip"
+        android:orientation="horizontal" >
+    </LinearLayout>
+
+</LinearLayout>

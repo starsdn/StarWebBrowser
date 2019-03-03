@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+        <LinearLayout
+            android:id="@+id/layout01"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/padding"
+            android:layout_marginRight="@dimen/padding"
+            android:layout_marginTop="@dimen/padding" >
+
+            <TextView
+                android:id="@+id/txtCLSBDH_txt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/sdnCLSBDH"
+                android:textColor="@color/black"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/txtCLSBDH"
+                android:tag="bh"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="2dp"
+                android:text="TextView"
+
+                android:textSize="20sp" />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/layout00"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/padding"
+            android:layout_marginRight="@dimen/padding"
+            android:layout_marginTop="@dimen/padding" >
+
+            <TextView
+                android:id="@+id/txtOBD_txt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/sdnOBD"
+                android:textColor="@color/black"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/txtOBD"
+                android:tag="bh"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="2dp"
+                android:text="TextView"
+                android:textSize="20sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layout02"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/padding"
+            android:layout_marginRight="@dimen/padding"
+            android:layout_marginTop="@dimen/padding" >
+            <Button
+                android:id="@+id/sdnbtnRead"
+                android:layout_width="200px"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+
+                android:minWidth="160dp"
+                android:layout_marginLeft="@dimen/padding"
+                android:background="@drawable/selector_button1"
+                android:textColor="@color/white"
+                android:textSize="@dimen/scanSize"
+                android:text="@string/sdngetobd" />
+            <Button
+                android:id="@+id/sdnaddblack"
+                android:layout_width="200px"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+
+                android:minWidth="160dp"
+                android:layout_marginLeft="@dimen/litterpadding"
+                android:background="@drawable/selector_button1"
+                android:textColor="@color/white"
+                android:textSize="@dimen/scanSize"
+                android:text="@string/sdnaddblack" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layout10"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/padding"
+            android:layout_marginRight="@dimen/padding"
+            android:layout_marginTop="@dimen/padding" >
+
+            <TextView
+                android:id="@+id/txtissame_txt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/sdnsame"
+                android:textColor="@color/black"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/txtsame"
+                android:tag="bh"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="2dp"
+                android:text="TextView"
+                android:textSize="20sp" />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/layout30"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/padding"
+            android:layout_marginRight="@dimen/padding"
+            android:layout_marginTop="@dimen/padding" >
+
+            <Button
+                android:id="@+id/btnNext"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/padding"
+                android:layout_weight="1"
+                android:background="@drawable/selector_button1"
+                android:text="@string/sdnNEXT"
+                android:textColor="@color/white"
+                android:textSize="@dimen/textSize" />
+
+            <Button
+                android:id="@+id/btnCancle"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/padding"
+                android:layout_weight="1"
+                android:background="@drawable/selector_button1"
+                android:text="@string/sdnCANCLE"
+                android:textColor="@color/white"
+                android:textSize="@dimen/textSize" />
+
+            <Button
+                android:id="@+id/btnPerson"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/padding"
+                android:layout_weight="1"
+                android:background="@drawable/selector_button1"
+                android:text="@string/sdnPERSON"
+                android:textColor="@color/white"
+                android:textSize="@dimen/textSize" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/layout40"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/padding"
+            android:layout_marginRight="@dimen/padding"
+            android:layout_marginTop="@dimen/padding" >
+
+            <TextView
+                android:id="@+id/txtCONTENT_txt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/sdnREASON"
+                android:textColor="@color/black"
+                android:textSize="20sp" />
+
+            <EditText
+                android:id="@+id/txtCONTENT"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="20"
+                android:hint="不可为空！"
+                android:textColor="@color/black"
+                android:inputType="textMultiLine" >
+
+                <requestFocus />
+            </EditText>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layout50"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/padding"
+            android:layout_marginRight="@dimen/padding"
+            android:layout_marginTop="@dimen/padding" >
+
+            <Button
+                android:id="@+id/btnPass"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/padding"
+                android:layout_weight="1"
+                android:background="@drawable/selector_button1"
+                android:text="@string/sdnPASS"
+                android:textColor="@color/white"
+                android:textSize="@dimen/textSize" />
+
+            <Button
+                android:id="@+id/btnNoPass"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/padding"
+                android:layout_weight="1"
+                android:background="@drawable/selector_button1"
+                android:text="@string/sdnNOPASS"
+                android:textColor="@color/white"
+                android:textSize="@dimen/textSize" />
+
+        </LinearLayout>
+
+
+
+    </LinearLayout>
+
+    <ScrollView
+        android:id="@+id/data_scroll"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+        <TableLayout
+            android:id="@+id/data_table"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:stretchColumns="*"
+            android:background="#dddddd">
+        </TableLayout>
+    </ScrollView>
+
+</LinearLayout>

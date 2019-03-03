@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+     android:layout_gravity="center"
+    android:background="@color/bg_color"
+    android:layout_marginBottom="5.0dip"
+    android:layout_marginTop="5.0dip"
+    android:orientation="vertical" >
+    
+      <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="35.0dip"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="1.0dip"
+            android:layout_marginRight="1.0dip"
+            android:layout_marginTop="0.0dip"
+            android:singleLine="true"
+            android:text="@string/sdnblackmark"
+            android:textColor="#ff000000"
+            android:textSize="16.0dip" />
+
+        <EditText
+            android:id="@+id/sdnblacemark"
+            android:inputType="text"
+            android:maxLines="1"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="1.0dip"
+            android:layout_marginRight="1.0dip"
+            android:ems="10"
+            android:textSize="13.0dip" />
+    </LinearLayout>
+    
+
+</LinearLayout>

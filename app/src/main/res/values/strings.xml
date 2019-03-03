@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">StarWebBrowser</string>
+
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="button_name">Java调用Web</string>
+    <string name="sdnCLSBDH">车辆识别代号</string>
+    <string name="sdnOBD">OBD读取VIN</string>
+    <string name="sdngetobd">读取</string>
+    <string name="sdnsame">是否一致</string>
+    <string name="sdnblackmark">说明</string>
+    <string name="sdnREASON">人工审核理由</string>
+    <string name="sdnNEXT">继续</string>
+    <string name="sdnCANCLE">取消</string>
+    <string name="sdnPERSON">人工审核</string>
+    <string name="sdnPASS">符合</string>
+    <string name="sdnNOPASS">不符合</string>
+    <string name="command_list">选择命令</string>
+    <string name="service_started">OBD已经链接.</string>
+    <string name="service_stopped">OBD 已经停止链接.</string>
+    <string name="notification_label">打开  OBD-Reader.</string>
+    <string name="sdnaddblack">拉黑</string>
+    <string name="action_settings">设置</string>
+
+</resources>
