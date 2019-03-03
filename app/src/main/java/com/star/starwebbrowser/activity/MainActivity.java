@@ -17,6 +17,7 @@ import com.star.library.jsbridge.CallBackFunction;
 import com.star.library.jsbridge.DefaultHandler;
 import com.google.gson.Gson;
 import com.star.starwebbrowser.model.SaveData;
+import com.star.starwebbrowser.model.VideoData;
 import com.star.starwebbrowser.tcp.TcpCleint;
 import com.star.starwebbrowser.utils.ProgressDialog;
 import com.star.starwebbrowser.save.SPUtils;
@@ -125,7 +126,50 @@ public class MainActivity extends SuperActivity implements OnClickListener{
                 function.onCallBack(strValue);
             }
         });
-
+        /***
+         * 开始录像
+         * 参数 JSON 格式数据 {}
+         */
+        webView.registerHandler("startVideo", new BridgeHandler() {
+            @Override
+            public void handler(String data, CallBackFunction function) {
+                Gson arrObj = new Gson();
+                VideoData videodata = arrObj.fromJson(data,VideoData.class);
+                Object[] arrayOfObject = new Object[6];
+                arrayOfObject[0] = videodata.hphm;
+                arrayOfObject[1] = videodata.hpzl;
+                arrayOfObject[2] = videodata.lineNo;//线号
+                arrayOfObject[3] = videodata.clsbdh; //车辆识别代码
+                arrayOfObject[4] = videodata.queueId; //queueID
+                arrayOfObject[5] = videodata.cllx; //车辆类型
+                //arrayOfObject[6]=videodata.syxz;//使用性质
+                //arrayOfObject[7]=videodata.bgys;//变更后的颜色（车辆颜色变更）
+                StartVideo(arrayOfObject);//开始录像
+                function.onCallBack("开启录像成功");
+            }
+        });
+        /**
+         * 结束录像
+         * 参数JSON 格式 {}
+         */
+        webView.registerHandler("stopVideo", new BridgeHandler() {
+            @Override
+            public void handler(String data, CallBackFunction function) {
+                Gson arrObj = new Gson();
+                VideoData videodata = arrObj.fromJson(data,VideoData.class);
+                Object[] arrayOfObject = new Object[8];
+                arrayOfObject[0] = videodata.hphm;
+                arrayOfObject[1] = videodata.hpzl;
+                arrayOfObject[2] = videodata.lineNo;//线号
+                arrayOfObject[3] = videodata.clsbdh; //车辆识别代码
+                arrayOfObject[4] = videodata.queueId; //queueID
+                arrayOfObject[5] = videodata.cllx; //车辆类型
+                arrayOfObject[6]=videodata.syxz;//使用性质
+                arrayOfObject[7]=videodata.bgys;//变更后的颜色（车辆颜色变更）
+                StopVideo(arrayOfObject);//开始录像
+                function.onCallBack("开启录像成功");
+            }
+        });
         webView.send("start");
 
     }
@@ -200,46 +244,37 @@ public class MainActivity extends SuperActivity implements OnClickListener{
 
 
     /* ************ 以下是 Socket通讯******************** */
-    public void StartVideo() {
+
+    /**
+     * 开始录像
+     * @param arrayOfObject
+     */
+    public void StartVideo(Object[] arrayOfObject) {
         if (SPUtils.readBoolean(this, "enablevideo")) {
             ProgressDialog.Show(this);
             TcpCommandTask localTcpCommandTask = new TcpCommandTask();
-            Object[] arrayOfObject = new Object[6];
+           /* Object[] arrayOfObject = new Object[6];
             arrayOfObject[0] = "号牌号码";
             arrayOfObject[1] = "号牌种类";
             arrayOfObject[2] = "1"; //线号
             arrayOfObject[3] = ""; //车辆识别代号
             arrayOfObject[4] =  ""; //queueId
             arrayOfObject[5] = "K33"; //车辆类型
-            String strParm = String
-                    .format("<?xml version=\"1.0\" encoding=\"GB2312\"?><diagram type=\"start\" hphm=\"%s\" hpzl=\"%s\" jcxxh=\"%s\" clsbdh=\"%s\" queueid=\"%s\" cllx=\"%s\" />",
+            */
+            String strParm = String.format("<?xml version=\"1.0\" encoding=\"GB2312\"?><diagram type=\"start\" hphm=\"%s\" hpzl=\"%s\" jcxxh=\"%s\" clsbdh=\"%s\" queueid=\"%s\" cllx=\"%s\" />",
                             arrayOfObject);
             localTcpCommandTask.execute(new String[] { strParm });
         }
     }
-    public void StopVideo() {
+
+    /**
+     * 结束录像
+     * @param arrayOfObject
+     */
+    public void StopVideo(Object[] arrayOfObject) {
         if (SPUtils.readBoolean(this, "enablevideo")) {
             ProgressDialog.Show(this);
             TcpCommandTask localTcpCommandTask = new TcpCommandTask();
-            String strSYXZTEMP="";
-           // if((!(buziType.equals("")))&& ((buziType.equals("I")) ||  buziType.equals("Q")))
-            {
-                strSYXZTEMP = SPUtils.readString(this, "syxz");
-            }
-           // else
-           // {
-            //    strSYXZTEMP = "";
-           // }
-            Object[] arrayOfObject = new Object[8];
-            arrayOfObject[0] = "号牌号码";
-            arrayOfObject[1] = "号牌种类";
-            arrayOfObject[2] = "1";//线号
-            arrayOfObject[3] = ""; //车辆识别代码
-            arrayOfObject[4] = ""; //queueID
-            arrayOfObject[5] = "K33"; //车辆类型
-
-            arrayOfObject[6]=strSYXZTEMP;//SPUtils.readString(this, "syxz");
-            arrayOfObject[7]="";//变更后的颜色（车辆颜色变更）
             localTcpCommandTask.execute(new String[] { String
                     .format("<?xml version=\"1.0\" encoding=\"GB2312\"?><diagram type=\"end\" hphm=\"%s\" hpzl=\"%s\" jcxxh=\"%s\" clsbdh=\"%s\" " +
                             " queueid=\"%s\" cllx=\"%s\"  new_use_type=\"%s\"   new_color=\"%s\" />",
