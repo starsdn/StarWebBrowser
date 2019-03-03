@@ -16,6 +16,7 @@ import com.star.library.jsbridge.BridgeWebView;
 import com.star.library.jsbridge.CallBackFunction;
 import com.star.library.jsbridge.DefaultHandler;
 import com.google.gson.Gson;
+import com.star.starwebbrowser.model.SaveData;
 import com.star.starwebbrowser.tcp.TcpCleint;
 import com.star.starwebbrowser.utils.ProgressDialog;
 import com.star.starwebbrowser.save.SPUtils;
@@ -67,6 +68,19 @@ public class MainActivity extends SuperActivity implements OnClickListener{
                 function.onCallBack("Response_sdn"); //响应JS请求
             }
         });
+        /**
+         * 调用OBD读取页面
+         * JS 页面调用时传递车辆识别代号 clsbdh
+         */
+        webView.registerHandler("ReadOBD", new BridgeHandler() {
+            @Override
+            public void handler(String data, CallBackFunction function) {
+
+                Intent obdIntent = new Intent(MainActivity.this,OBDDataCheck.class);
+                obdIntent.putExtra("clsbdh", data); // 车辆识别代号
+                startActivityForResult(obdIntent,4);
+            }
+        });
         /* * ** 注册供 JS调用的ShotCamera 打开拍照界面** **/
         webView.registerHandler("ShotCamera", new BridgeHandler() {
             @Override
@@ -84,6 +98,31 @@ public class MainActivity extends SuperActivity implements OnClickListener{
                 CaptureIntent.putExtra("clsbdh", jsonClass.clsbdh); // 车辆识别代号
                 startActivityForResult(CaptureIntent, 5);
                 function.onCallBack("Response_sdn_camera"); //响应JS请求
+            }
+        });
+        /**
+         * 保存string 类型的数据
+         * 参数 JSON类型  {'_key':'key','_value':'value'}
+         */
+        webView.registerHandler("SaveStr", new BridgeHandler() {
+            @Override
+            public void handler(String data, CallBackFunction function) {
+
+                SaveData saveData = new SaveData();
+                saveData = new Gson().fromJson(data,saveData.getClass());
+                SPUtils.saveString(MainActivity.this,saveData._key,saveData._value);
+                function.onCallBack("保存数据成功");
+            }
+        });
+        /**
+         * 读取保存的数据
+         * 参数 key
+         */
+        webView.registerHandler("ReadStr", new BridgeHandler() {
+            @Override
+            public void handler(String data, CallBackFunction function) {
+                String strValue = SPUtils.readString(MainActivity.this,data);
+                function.onCallBack(strValue);
             }
         });
 
