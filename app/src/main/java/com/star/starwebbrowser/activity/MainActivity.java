@@ -46,6 +46,8 @@ public class MainActivity extends SuperActivity implements OnClickListener{
         String appCachePath = getApplicationContext().getCacheDir().getAbsolutePath();
         webView.getSettings().setAppCachePath(appCachePath);
         webView.getSettings().setAllowFileAccess(true);
+        webView.getSettings().setAllowFileAccessFromFileURLs(true);
+        webView.getSettings().setAllowUniversalAccessFromFileURLs(true);
         webView.getSettings().setAppCacheEnabled(true);
         /* ** 配置浏览器缓存*/
 
