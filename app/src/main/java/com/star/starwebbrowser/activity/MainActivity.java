@@ -3,12 +3,15 @@ package com.star.starwebbrowser.activity;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View.OnClickListener;
 import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
+import android.webkit.WebViewClient;
 import android.widget.Button;
 
 import com.star.library.jsbridge.BridgeHandler;
@@ -24,13 +27,16 @@ import com.star.starwebbrowser.save.SPUtils;
 import com.star.starwebbrowser.R;
 import com.star.starwebbrowser.utils.ImageUtils;
 
-public class MainActivity extends SuperActivity implements OnClickListener{
+import java.io.File;
+
+public class MainActivity extends SuperActivity implements OnClickListener {
 
     private final String TAG = "MainActivity";
     BridgeWebView webView;
     Button button;
-    int isdnIsSame=1;//扫描VIN是否与OBD读取到的VIN一致 0:不一致 1:一致 2:未知
-    String code ="";//拍照种类代码
+    Uri imageUri;
+    int isdnIsSame = 1;//扫描VIN是否与OBD读取到的VIN一致 0:不一致 1:一致 2:未知
+    String code = "";//拍照种类代码
 
 
     @Override
@@ -42,7 +48,7 @@ public class MainActivity extends SuperActivity implements OnClickListener{
 
         /* ** 配置浏览器缓存*/
         webView.getSettings().setDomStorageEnabled(true);
-        webView.getSettings().setAppCacheMaxSize(1024*1024*8);
+        webView.getSettings().setAppCacheMaxSize(1024 * 1024 * 8);
         String appCachePath = getApplicationContext().getCacheDir().getAbsolutePath();
         webView.getSettings().setAppCachePath(appCachePath);
         webView.getSettings().setAllowFileAccess(true);
@@ -57,8 +63,8 @@ public class MainActivity extends SuperActivity implements OnClickListener{
 
         });
 
-       webView.loadUrl("file:///android_asset/demo.html");
-     //  webView.loadUrl("http://192.168.1.58:8017/start.html");
+        //webView.loadUrl("file:///android_asset/demo.html");
+        webView.loadUrl("http://192.168.1.58:8017/start.html");
 
 
         /* * ** 注册供 JS调用的 ScanQR 打开二维码扫描界面** **/
@@ -79,18 +85,18 @@ public class MainActivity extends SuperActivity implements OnClickListener{
             @Override
             public void handler(String data, CallBackFunction function) {
 
-                Intent obdIntent = new Intent(MainActivity.this,OBDDataCheck.class);
+                Intent obdIntent = new Intent(MainActivity.this, OBDDataCheck.class);
                 obdIntent.putExtra("clsbdh", data); // 车辆识别代号
-                startActivityForResult(obdIntent,4);
+                startActivityForResult(obdIntent, 4);
             }
         });
         /* * ** 注册供 JS调用的ShotCamera 打开拍照界面** **/
         webView.registerHandler("ShotCamera", new BridgeHandler() {
             @Override
             public void handler(String data, CallBackFunction function) {
-               // new Gson().fromJson(data,)
+                // new Gson().fromJson(data,)
                 Gson gsonCamera = new Gson();
-                GetCameraJson jsonClass = gsonCamera.fromJson(data,GetCameraJson.class);
+                GetCameraJson jsonClass = gsonCamera.fromJson(data, GetCameraJson.class);
 
                 Intent CaptureIntent;
                 CaptureIntent = new Intent(MainActivity.this, SnapShotActivity.class);
@@ -112,8 +118,8 @@ public class MainActivity extends SuperActivity implements OnClickListener{
             public void handler(String data, CallBackFunction function) {
 
                 SaveData saveData = new SaveData();
-                saveData = new Gson().fromJson(data,saveData.getClass());
-                SPUtils.saveString(MainActivity.this,saveData._key,saveData._value);
+                saveData = new Gson().fromJson(data, saveData.getClass());
+                SPUtils.saveString(MainActivity.this, saveData._key, saveData._value);
                 function.onCallBack("保存数据成功");
             }
         });
@@ -124,7 +130,7 @@ public class MainActivity extends SuperActivity implements OnClickListener{
         webView.registerHandler("ReadStr", new BridgeHandler() {
             @Override
             public void handler(String data, CallBackFunction function) {
-                String strValue = SPUtils.readString(MainActivity.this,data);
+                String strValue = SPUtils.readString(MainActivity.this, data);
                 function.onCallBack(strValue);
             }
         });
@@ -136,14 +142,15 @@ public class MainActivity extends SuperActivity implements OnClickListener{
             @Override
             public void handler(String data, CallBackFunction function) {
                 Gson arrObj = new Gson();
-                VideoData videodata = arrObj.fromJson(data,VideoData.class);
-                Object[] arrayOfObject = new Object[6];
+                VideoData videodata = arrObj.fromJson(data, VideoData.class);
+                Object[] arrayOfObject = new Object[7];
                 arrayOfObject[0] = videodata.hphm;
                 arrayOfObject[1] = videodata.hpzl;
                 arrayOfObject[2] = videodata.lineNo;//线号
                 arrayOfObject[3] = videodata.clsbdh; //车辆识别代码
                 arrayOfObject[4] = videodata.queueId; //queueID
                 arrayOfObject[5] = videodata.cllx; //车辆类型
+                arrayOfObject[6] = videodata.ywlx; //车辆类型
                 //arrayOfObject[6]=videodata.syxz;//使用性质
                 //arrayOfObject[7]=videodata.bgys;//变更后的颜色（车辆颜色变更）
                 StartVideo(arrayOfObject);//开始录像
@@ -158,18 +165,19 @@ public class MainActivity extends SuperActivity implements OnClickListener{
             @Override
             public void handler(String data, CallBackFunction function) {
                 Gson arrObj = new Gson();
-                VideoData videodata = arrObj.fromJson(data,VideoData.class);
-                Object[] arrayOfObject = new Object[8];
+                VideoData videodata = arrObj.fromJson(data, VideoData.class);
+                Object[] arrayOfObject = new Object[9];
                 arrayOfObject[0] = videodata.hphm;
                 arrayOfObject[1] = videodata.hpzl;
                 arrayOfObject[2] = videodata.lineNo;//线号
                 arrayOfObject[3] = videodata.clsbdh; //车辆识别代码
                 arrayOfObject[4] = videodata.queueId; //queueID
                 arrayOfObject[5] = videodata.cllx; //车辆类型
-                arrayOfObject[6]=videodata.syxz;//使用性质
-                arrayOfObject[7]=videodata.bgys;//变更后的颜色（车辆颜色变更）
+                arrayOfObject[6] = videodata.ywlx; //车辆类型
+                arrayOfObject[7] = videodata.syxz;//使用性质
+                arrayOfObject[8] = videodata.bgys;//变更后的颜色（车辆颜色变更）
                 StopVideo(arrayOfObject);//开始录像
-                function.onCallBack("开启录像成功");
+                function.onCallBack("结束录像成功");
             }
         });
         webView.send("start");
@@ -178,82 +186,90 @@ public class MainActivity extends SuperActivity implements OnClickListener{
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
-      switch (requestCode){
-          case 3://扫描二维码
-              String strScanValue = intent.getExtras().getString("scanValue"); //得到对应的扫描结果
-              webView.callHandler("showQRvalue", strScanValue, new CallBackFunction() {
-                  @Override
-                  public void onCallBack(String data) {
-                      //得到对应的返回数据
-                      Log.i(TAG,"reponse data from js"+data);
-                  }
-              });
-              break;
-          case 4://OBD对接
+        switch (requestCode) {
+            case 3://扫描二维码
+                String strScanValue = intent.getExtras().getString("scanValue"); //得到对应的扫描结果
+                webView.callHandler("showQRvalue", strScanValue, new CallBackFunction() {
+                    @Override
+                    public void onCallBack(String data) {
+                        //得到对应的返回数据
+                        Log.i(TAG, "reponse data from js" + data);
+                    }
+                });
+                break;
+            case 4://OBD对接
 
-              int opetype_obd = intent.getExtras().getInt("optype_obd"); //得到页面返回值
-              String obd_readdata = SPUtils.readString(MainActivity.this, "obd_readdata");
-              isdnIsSame = intent.getExtras().getInt("sdnissame");
-              if(opetype_obd==1){  //继续
-                  //DealGetVechInfo();  //处理车辆信息
-                  //InsertGBvData(opetype,"",9);
-                 // InsertOBDdata(opetype_obd,"",9,obd_readdata);
-              }else if(opetype_obd==0){ //不一致
-                  //finish();//关闭
-                  //InsertGBvData(opetype,"",9);
-                 // InsertOBDdata(opetype_obd,"",9,obd_readdata);
-                  return;
-              } else if(opetype_obd==2){ //未知
-                  int perType_obd = intent.getExtras().getInt("pertype_obd");
-                  String strContent = intent.getExtras().getString("sdnReason_obd");
-                  if(perType_obd==0){ //人工审核不通过
-                      finish();//关闭
-                      //	InsertGBvData(opetype,strContent,perType);
-                     // InsertOBDdata(opetype_obd,strContent,perType_obd,obd_readdata);
-                  }else if(perType_obd==1){ //人工审核通过
-                      //	InsertGBvData(opetype,strContent,perType);
-                    //  InsertOBDdata(opetype_obd,strContent,perType_obd,obd_readdata);
-                      //DealGetVechInfo();  //处理车辆信息
-                  }
-              } else if(opetype_obd==99){ //99 为添加嫌疑车辆
-                  String remark = intent.getExtras().getString("sdnReason_obd");
-                  //insertBlackCar(vech.clsbdh,remark);
-              }
-              break;
-          case 5: //拍照界面
-             String strImg = intent.getExtras().getString("str_image");
-            //  String strImg = bundle.getString("str_image");
-              String strStrImg="";
-              if(strImg.equals("1")){
-                  strStrImg=  ImageUtils.getBase64Str(app.currentPhoto);
-              }
+                int opetype_obd = intent.getExtras().getInt("optype_obd"); //得到页面返回值
+                String obd_readdata = SPUtils.readString(MainActivity.this, "obd_readdata");
+                isdnIsSame = intent.getExtras().getInt("sdnissame");
+                if (opetype_obd == 1) {  //继续
+                    //DealGetVechInfo();  //处理车辆信息
+                    //InsertGBvData(opetype,"",9);
+                    // InsertOBDdata(opetype_obd,"",9,obd_readdata);
+                } else if (opetype_obd == 0) { //不一致
+                    //finish();//关闭
+                    //InsertGBvData(opetype,"",9);
+                    // InsertOBDdata(opetype_obd,"",9,obd_readdata);
+                    return;
+                } else if (opetype_obd == 2) { //未知
+                    int perType_obd = intent.getExtras().getInt("pertype_obd");
+                    String strContent = intent.getExtras().getString("sdnReason_obd");
+                    if (perType_obd == 0) { //人工审核不通过
+                        finish();//关闭
+                        //	InsertGBvData(opetype,strContent,perType);
+                        // InsertOBDdata(opetype_obd,strContent,perType_obd,obd_readdata);
+                    } else if (perType_obd == 1) { //人工审核通过
+                        //	InsertGBvData(opetype,strContent,perType);
+                        //  InsertOBDdata(opetype_obd,strContent,perType_obd,obd_readdata);
+                        //DealGetVechInfo();  //处理车辆信息
+                    }
+                } else if (opetype_obd == 99) { //99 为添加嫌疑车辆
+                    String remark = intent.getExtras().getString("sdnReason_obd");
+                    //insertBlackCar(vech.clsbdh,remark);
+                }
+                break;
+            case 5: //拍照界面
+                String strImg = intent.getExtras().getString("str_image");
+                //  String strImg = bundle.getString("str_image");
+                String strStrImg = "";
 
-              responCamera responCamera = new responCamera();
-              responCamera.code = code;
-              responCamera.strImg = strStrImg;
+                // File tempFile;
+                if (strImg.equals("1")) {
+                    //  String snapfield = intent.getExtras().getString("field");
+                    //    String strClsbdh = intent.getExtras().getString("clsbdh");
+                    // strStrImg= app.photoCollect.getPhotoPath(strClsbdh,snapfield);
+                    // tempFile = new File(strStrImg);
+                    //  imageUri = Uri.fromFile(tempFile);
+                    strStrImg = ImageUtils.getBase64Str(app.currentPhoto);
+                }
 
-              webView.callHandler("showStrImg", strStrImg, new CallBackFunction() {
-                  @Override
-                  public void onCallBack(String data) {
-                      //得到对应的返回数据
-                      Log.i(TAG,"reponse data from js"+data);
-                  }
-              });
-              break;
-              default:
-      }
+                responCamera responCamera = new responCamera();
+                responCamera.code = code;
+                responCamera.strImg = strStrImg;
+                webView.loadUrl("javascript:loadImg1('" + strStrImg + "')");
+                //  webView.callHandler("showStrImg", imageUri.toString(), new CallBackFunction() {
+                //  @Override
+                //   public void onCallBack(String data) {
+                //得到对应的返回数据
+                //     webView.loadUrl("javascript:loadImg1("+data+")");
+                //   Log.i(TAG,"reponse data from js"+data);
+                //   }
+                //  });
+                break;
+            default:
+        }
     }
-
 
     /* ************ 以下是 Socket通讯******************** */
 
     /**
      * 开始录像
+     *
      * @param arrayOfObject
      */
     public void StartVideo(Object[] arrayOfObject) {
         if (SPUtils.readBoolean(this, "enablevideo")) {
-            ProgressDialog.Show(this);
+           // ProgressDialog.Show(this);
             TcpCommandTask localTcpCommandTask = new TcpCommandTask();
            /* Object[] arrayOfObject = new Object[6];
             arrayOfObject[0] = "号牌号码";
@@ -263,26 +279,28 @@ public class MainActivity extends SuperActivity implements OnClickListener{
             arrayOfObject[4] =  ""; //queueId
             arrayOfObject[5] = "K33"; //车辆类型
             */
-            String strParm = String.format("<?xml version=\"1.0\" encoding=\"GB2312\"?><diagram type=\"start\" hphm=\"%s\" hpzl=\"%s\" jcxxh=\"%s\" clsbdh=\"%s\" queueid=\"%s\" cllx=\"%s\" />",
-                            arrayOfObject);
-            localTcpCommandTask.execute(new String[] { strParm });
+            String strParm = String.format("<?xml version=\"1.0\" encoding=\"GB2312\"?><diagram type=\"start\" hphm=\"%s\" hpzl=\"%s\" jcxxh=\"%s\" clsbdh=\"%s\" queueid=\"%s\" cllx=\"%s\" ywlx=\"%s\" />",
+                    arrayOfObject);
+            localTcpCommandTask.execute(new String[]{strParm});
         }
     }
 
     /**
      * 结束录像
+     *
      * @param arrayOfObject
      */
     public void StopVideo(Object[] arrayOfObject) {
         if (SPUtils.readBoolean(this, "enablevideo")) {
-            ProgressDialog.Show(this);
+           // ProgressDialog.Show(this);
             TcpCommandTask localTcpCommandTask = new TcpCommandTask();
-            localTcpCommandTask.execute(new String[] { String
+            localTcpCommandTask.execute(new String[]{String
                     .format("<?xml version=\"1.0\" encoding=\"GB2312\"?><diagram type=\"end\" hphm=\"%s\" hpzl=\"%s\" jcxxh=\"%s\" clsbdh=\"%s\" " +
-                            " queueid=\"%s\" cllx=\"%s\"  new_use_type=\"%s\"   new_color=\"%s\" />",
-                    arrayOfObject) });
+                            " queueid=\"%s\" cllx=\"%s\" ywlx=\"%s\"  new_use_type=\"%s\"   new_color=\"%s\" />",
+                    arrayOfObject)});
         }
     }
+
     @SuppressLint("NewApi")
     class TcpCommandTask extends AsyncTask<String, Integer, Boolean> {
         String errorMessage = "";
@@ -328,7 +346,7 @@ public class MainActivity extends SuperActivity implements OnClickListener{
     /**
      * 拍照参数解析类
      */
-    private class GetCameraJson{
+    private class GetCameraJson {
         //照片代码
         String code;
         //车辆识别代号
@@ -340,7 +358,7 @@ public class MainActivity extends SuperActivity implements OnClickListener{
     /**
      * 拍照返回值
      */
-    private class  responCamera{
+    private class responCamera {
         //代码
         String code;
         //字符串图片

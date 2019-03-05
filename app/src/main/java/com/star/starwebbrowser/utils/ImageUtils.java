@@ -64,7 +64,7 @@ public class ImageUtils {
      */
     public static String getBase64Str(Bitmap bm){
         byte[] data = bitmap2Bytes(bm);
-        return Base64.encodeToString(data, Base64.DEFAULT);
+        return Base64.encodeToString(data, Base64.NO_WRAP);
     }
 
     /**

@@ -12,4 +12,5 @@ public class VideoData {
     public  String cllx;//车辆类型
     public  String syxz;//使用性质
     public  String bgys;//变更颜色
+    public String ywlx;//业务类型
 }

@@ -19,6 +19,7 @@ import android.graphics.PixelFormat;
 import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
 import android.hardware.Camera.Size;
+import android.media.ThumbnailUtils;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -34,8 +35,8 @@ import android.widget.TextView;
 public class SnapShotActivity extends SuperActivity implements
         View.OnClickListener, SurfaceHolder.Callback {
 
-    String[] FlashMode = { Camera.Parameters.FLASH_MODE_AUTO,Camera.Parameters.FLASH_MODE_OFF, Camera.Parameters.FLASH_MODE_ON };
-    int[] FlashModeIcon = { R.mipmap.flash_auto, R.mipmap.flash_off,R.mipmap.flash_on };
+    String[] FlashMode = {Camera.Parameters.FLASH_MODE_AUTO, Camera.Parameters.FLASH_MODE_OFF, Camera.Parameters.FLASH_MODE_ON};
+    int[] FlashModeIcon = {R.mipmap.flash_auto, R.mipmap.flash_off, R.mipmap.flash_on};
     int curFlashMode = 0; //当前闪光灯类型
 
     float afterLenght;
@@ -105,10 +106,10 @@ public class SnapShotActivity extends SuperActivity implements
             if (strClsbdh == null) {
                 strClsbdh = "";
             }
-            if(snapfield.equalsIgnoreCase("00")){ //如果是查验员照片
-                iCamera=1;
-            }else{
-                iCamera=0;
+            if (snapfield.equalsIgnoreCase("00")) { //如果是查验员照片
+                iCamera = 1;
+            } else {
+                iCamera = 0;
             }
             title = ((TextView) findViewById(R.id.camTitle));
             title.setText(fieldname);
@@ -139,23 +140,26 @@ public class SnapShotActivity extends SuperActivity implements
                 if ((snapfield != null) && (!snapfield.equals("")))
                     if (curBitMap != null) {
 
-                      //  if (!app.photoCollect.saveFile(curBitMap, strClsbdh, snapfield))
-                      //      new AlertDialog.Builder(this).setTitle("存储本地照片失败").setMessage("磁盘空间").setPositiveButton("确定", null).show();
+                        //   if (!app.photoCollect.saveFile(curBitMap, strClsbdh, snapfield))
+                        //      new AlertDialog.Builder(this).setTitle("存储本地照片失败").setMessage("磁盘空间").setPositiveButton("确定", null).show();
                         //app.currentSmallPhoto = ThumbnailUtils.extractThumbnail(curBitMap, 120, 90);
                         app.currentPhoto = curBitMap;
+                        // app.currentPhoto = ThumbnailUtils.extractThumbnail(curBitMap, 120, 90);;
 
-                      //得到base64字符串
-                    //  String strStrImg=  ImageUtils.getBase64Str(curBitMap);
+                        //得到base64字符串
+                        //  String strStrImg=  ImageUtils.getBase64Str(curBitMap);
                         Intent localIntent = new Intent();
-                      //  Bundle bundle = new Bundle();
-                       // bundle.putString("str_image",strStrImg);
-                      //  bundle.putParcelable("str_image",curBitMap);
+                        //  Bundle bundle = new Bundle();
+                        // bundle.putString("str_image",strStrImg);
+                        //  bundle.putParcelable("str_image",curBitMap);
                         //localIntent.putExtra("str_image", strStrImg); //拍照图片
-                       localIntent.putExtra("str_image", "1");
-                       // setResult(-1, localIntent);
-                      //  localIntent.putExtras(bundle);
-                        this.setResult(RESULT_OK,localIntent);
-                      //  finish();
+                        localIntent.putExtra("str_image", "1");
+                        localIntent.putExtra("clsbdh", strClsbdh);
+                        localIntent.putExtra("field", snapfield);
+                        // setResult(-1, localIntent);
+                        //  localIntent.putExtras(bundle);
+                        this.setResult(RESULT_OK, localIntent);
+                        //  finish();
 
                         if (this.isView)
                             this.myCamera.stopPreview();
@@ -200,7 +204,7 @@ public class SnapShotActivity extends SuperActivity implements
             if (v == snapcancel) {
                 if (this.isView)
                     this.myCamera.stopPreview();
-            //    app.currentSmallPhoto = null;
+                //    app.currentSmallPhoto = null;
                 Intent localIntent = new Intent();
 
                 // bundle.putString("str_image",strStrImg);
@@ -209,7 +213,7 @@ public class SnapShotActivity extends SuperActivity implements
                 localIntent.putExtra("str_image", "0");
                 // setResult(-1, localIntent);
                 //localIntent.putExtras(bundle);
-                this.setResult(RESULT_OK,localIntent);
+                this.setResult(RESULT_OK, localIntent);
                 finish();
             }
             if (v == btnFlashSwitch) {
@@ -278,7 +282,7 @@ public class SnapShotActivity extends SuperActivity implements
                         paramAnonymousArrayOfByte, 0,
                         paramAnonymousArrayOfByte.length);
                 String str = SPUtils.readString(SnapShotActivity.this, "clsbdh");// 得到相应的检测项目
-                String strHPHM = SPUtils.readString(SnapShotActivity.this,"hphm");// 号牌号码
+                String strHPHM = SPUtils.readString(SnapShotActivity.this, "hphm");// 号牌号码
                 Object localObject;
                 if (!str.trim().equals("")) {
                     localObject = ImageDeal.AddTextToImage(localBitmap1, " " + str);
@@ -302,7 +306,9 @@ public class SnapShotActivity extends SuperActivity implements
         }
     };
 
-    /** 两个手指 只能放大缩小 **/
+    /**
+     * 两个手指 只能放大缩小
+     **/
     void onPointerDown(MotionEvent event) {
         if (event.getPointerCount() == 2) {
             mode = MODE.ZOOM;
@@ -310,7 +316,9 @@ public class SnapShotActivity extends SuperActivity implements
         }
     }
 
-    /** 获取两点的距离 **/
+    /**
+     * 获取两点的距离
+     **/
     private float getDistance(MotionEvent event) {
         try {
             float f1 = event.getX(0) - event.getX(1);
@@ -556,12 +564,13 @@ public class SnapShotActivity extends SuperActivity implements
      * 模式 NONE：无 DRAG：拖拽. ZOOM:缩放
      *
      * @author zhangjia
-     *
      */
     private enum MODE {
         NONE, DRAG, ZOOM
 
-    };
+    }
+
+    ;
 
     private int start_x, start_y, current_x, current_y;// 触摸位置
 
@@ -604,7 +613,9 @@ public class SnapShotActivity extends SuperActivity implements
         return true;
     }
 
-    /** 移动的处理 **/
+    /**
+     * 移动的处理
+     **/
     void onTouchMove(MotionEvent event) {
         float f1 = getDistance(event); // 得到移动事件两点之间的距离
         if (f1 > 0.0F && (Math.abs(afterLenght - beforeLenght) > 5.0F)) {
@@ -635,7 +646,9 @@ public class SnapShotActivity extends SuperActivity implements
         beforeLenght = this.afterLenght;
     }
 
-    /** 按下 **/
+    /**
+     * 按下
+     **/
     void onTouchDown(MotionEvent event) {
         mode = MODE.DRAG;
 

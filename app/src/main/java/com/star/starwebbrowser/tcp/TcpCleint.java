@@ -19,7 +19,7 @@ public class TcpCleint implements Runnable {
     public static byte[] intToByte(int paramInt) {
         int i = paramInt;
         byte[] arrayOfByte = new byte[4];
-        for (int j = 0;; j++) {
+        for (int j = 0; ; j++) {
             if (j >= -1 + arrayOfByte.length)
                 return arrayOfByte;
             arrayOfByte[j] = new Integer(i & 0xFF).byteValue();
@@ -61,8 +61,9 @@ public class TcpCleint implements Runnable {
             throws UnknownHostException, IOException, Exception {
         new TcpCleint();
         try {
-            int iPort =8888;
-            iPort = SPUtils.readInt(paramContext, "sdnvideoport");
+            int iPort = 8888;
+            String iPortstring = SPUtils.readString(paramContext, "sdnvideoport");
+            iPort = Integer.parseInt(iPortstring);
             String strIp = SPUtils.readString(paramContext, "sdnvideoip");
             Socket localSocket = new Socket(InetAddress.getByName(strIp), iPort);
             localSocket.setSoTimeout(15000);
@@ -77,11 +78,9 @@ public class TcpCleint implements Runnable {
             localOutputStream.flush();
             String str = recvMessage(localInputStream);
             // Log.i("abc", str);
-            try
-            {
+            try {
                 localSocket.close();//关闭当前连接
-            }
-            catch(Exception ex){
+            } catch (Exception ex) {
                 Log.i("aa", "------");
             }
             return str;
