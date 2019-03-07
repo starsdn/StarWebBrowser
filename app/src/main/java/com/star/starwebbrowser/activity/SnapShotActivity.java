@@ -281,7 +281,7 @@ public class SnapShotActivity extends SuperActivity implements
                 Bitmap localBitmap1 = BitmapFactory.decodeByteArray(
                         paramAnonymousArrayOfByte, 0,
                         paramAnonymousArrayOfByte.length);
-                String str = SPUtils.readString(SnapShotActivity.this, "clsbdh");// 得到相应的检测项目
+                String str = strClsbdh;// 得到相应的检测项目
                 String strHPHM = SPUtils.readString(SnapShotActivity.this, "hphm");// 号牌号码
                 Object localObject;
                 if (!str.trim().equals("")) {
