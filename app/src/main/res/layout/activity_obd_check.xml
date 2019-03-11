@@ -81,18 +81,20 @@
                 android:textColor="@color/white"
                 android:textSize="@dimen/scanSize"
                 android:text="@string/sdngetobd" />
+
             <Button
                 android:id="@+id/sdnaddblack"
                 android:layout_width="200px"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
 
-                android:minWidth="160dp"
                 android:layout_marginLeft="@dimen/litterpadding"
                 android:background="@drawable/selector_button1"
+                android:minWidth="160dp"
+                android:text="@string/sdnaddblack"
                 android:textColor="@color/white"
                 android:textSize="@dimen/scanSize"
-                android:text="@string/sdnaddblack" />
+                android:visibility="gone" />
         </LinearLayout>
 
         <LinearLayout
@@ -159,7 +161,8 @@
                 android:background="@drawable/selector_button1"
                 android:text="@string/sdnPERSON"
                 android:textColor="@color/white"
-                android:textSize="@dimen/textSize" />
+                android:textSize="@dimen/textSize"
+                android:visibility="gone" />
         </LinearLayout>
 
 
@@ -177,7 +180,8 @@
                 android:layout_height="wrap_content"
                 android:text="@string/sdnREASON"
                 android:textColor="@color/black"
-                android:textSize="20sp" />
+                android:textSize="20sp"
+                android:visibility="gone" />
 
             <EditText
                 android:id="@+id/txtCONTENT"
@@ -186,8 +190,9 @@
                 android:layout_weight="1"
                 android:ems="20"
                 android:hint="不可为空！"
+                android:inputType="textMultiLine"
                 android:textColor="@color/black"
-                android:inputType="textMultiLine" >
+                android:visibility="gone">
 
                 <requestFocus />
             </EditText>
@@ -211,7 +216,8 @@
                 android:background="@drawable/selector_button1"
                 android:text="@string/sdnPASS"
                 android:textColor="@color/white"
-                android:textSize="@dimen/textSize" />
+                android:textSize="@dimen/textSize"
+                android:visibility="gone" />
 
             <Button
                 android:id="@+id/btnNoPass"
@@ -222,7 +228,8 @@
                 android:background="@drawable/selector_button1"
                 android:text="@string/sdnNOPASS"
                 android:textColor="@color/white"
-                android:textSize="@dimen/textSize" />
+                android:textSize="@dimen/textSize"
+                android:visibility="gone" />
 
         </LinearLayout>
 

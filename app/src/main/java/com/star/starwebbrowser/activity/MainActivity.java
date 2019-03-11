@@ -201,32 +201,14 @@ public class MainActivity extends SuperActivity implements OnClickListener {
 
                 int opetype_obd = intent.getExtras().getInt("optype_obd"); //得到页面返回值
                 String obd_readdata = SPUtils.readString(MainActivity.this, "obd_readdata");
-                isdnIsSame = intent.getExtras().getInt("sdnissame");
-                if (opetype_obd == 1) {  //继续
-                    //DealGetVechInfo();  //处理车辆信息
-                    //InsertGBvData(opetype,"",9);
-                    // InsertOBDdata(opetype_obd,"",9,obd_readdata);
-                } else if (opetype_obd == 0) { //不一致
-                    //finish();//关闭
-                    //InsertGBvData(opetype,"",9);
-                    // InsertOBDdata(opetype_obd,"",9,obd_readdata);
-                    return;
-                } else if (opetype_obd == 2) { //未知
-                    int perType_obd = intent.getExtras().getInt("pertype_obd");
-                    String strContent = intent.getExtras().getString("sdnReason_obd");
-                    if (perType_obd == 0) { //人工审核不通过
-                        finish();//关闭
-                        //	InsertGBvData(opetype,strContent,perType);
-                        // InsertOBDdata(opetype_obd,strContent,perType_obd,obd_readdata);
-                    } else if (perType_obd == 1) { //人工审核通过
-                        //	InsertGBvData(opetype,strContent,perType);
-                        //  InsertOBDdata(opetype_obd,strContent,perType_obd,obd_readdata);
-                        //DealGetVechInfo();  //处理车辆信息
+                String strObdVin = intent.getExtras().getString("obdvin");
+                webView.callHandler("xslObd", strObdVin, new CallBackFunction() {
+                    @Override
+                    public void onCallBack(String data) {
+                        //得到对应的返回数据
+                        Log.i(TAG, "reponse data from js" + data);
                     }
-                } else if (opetype_obd == 99) { //99 为添加嫌疑车辆
-                    String remark = intent.getExtras().getString("sdnReason_obd");
-                    //insertBlackCar(vech.clsbdh,remark);
-                }
+                });
                 break;
             case 5: //拍照界面
                 String strImg = intent.getExtras().getString("str_image");

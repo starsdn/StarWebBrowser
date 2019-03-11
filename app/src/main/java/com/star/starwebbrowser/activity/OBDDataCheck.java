@@ -267,19 +267,19 @@ public class OBDDataCheck extends SuperActivity implements
     private void InitUI(int iParam){
         switch(iParam){
             case 0://不合格
-                btnNext.setVisibility(View.GONE);//继续按钮不可用
-                lineEdit.setVisibility(View.GONE); //编辑列布可见
-                lineButton.setVisibility(View.GONE);
+            //    btnNext.setVisibility(View.GONE);//继续按钮不可用
+             //   lineEdit.setVisibility(View.GONE); //编辑列布可见
+             //   lineButton.setVisibility(View.GONE);
                 break;
             case 1: //合格
-                lineEdit.setVisibility(View.GONE); //编辑列布可见
-                lineButton.setVisibility(View.GONE);
-                btnNext.setVisibility(View.VISIBLE);
+             //   lineEdit.setVisibility(View.GONE); //编辑列布可见
+              //  lineButton.setVisibility(View.GONE);
+             //   btnNext.setVisibility(View.VISIBLE);
                 break;
             case 2: //未知
-                btnNext.setVisibility(View.GONE);//继续按钮不可用
-                lineEdit.setVisibility(View.VISIBLE); //编辑列布可见
-                lineButton.setVisibility(View.VISIBLE);
+           //   //  btnNext.setVisibility(View.GONE);//继续按钮不可用
+             //   lineEdit.setVisibility(View.VISIBLE); //编辑列布可见
+             //   lineButton.setVisibility(View.VISIBLE);
                 break;
 
             default:
@@ -382,7 +382,7 @@ public class OBDDataCheck extends SuperActivity implements
             stopLiveData();
             Intent localIntent = new Intent();
             localIntent.putExtra("optype_obd", 1); //继续
-            localIntent.putExtra("sdnissame", sdnissame);
+            localIntent.putExtra("obdvin", strObdVin);
             setResult(-1, localIntent);
             finish();
             return;
@@ -391,7 +391,7 @@ public class OBDDataCheck extends SuperActivity implements
             stopLiveData();
             Intent localIntent = new Intent();
             localIntent.putExtra("optype_obd", 0); //取消
-            localIntent.putExtra("sdnissame", sdnissame);
+            localIntent.putExtra("obdvin", "0");
             setResult(-1, localIntent);
             finish();
             return;
