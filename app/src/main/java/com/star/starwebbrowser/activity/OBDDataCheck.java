@@ -437,6 +437,7 @@ public class OBDDataCheck extends SuperActivity implements
             finish();
             return;
         } else if(v==btnAddBlack){  //添加黑名单
+            /*
             View vAddBlack = getLayoutInflater().inflate(R.layout.activity_add_black,null);
             editBlackMark = (EditText)vAddBlack.findViewById(R.id.sdnblacemark);
             new AlertDialog.Builder(this)
@@ -456,6 +457,8 @@ public class OBDDataCheck extends SuperActivity implements
                         }
                     })
                     .setNegativeButton("取消", null).show();
+                    */
+            updateConfig();//打开配置按钮
         }
         else if(v==btnRead){  //读取OBD数据 并分析VIN吗
 

@@ -93,8 +93,7 @@
                 android:minWidth="160dp"
                 android:text="@string/sdnaddblack"
                 android:textColor="@color/white"
-                android:textSize="@dimen/scanSize"
-                android:visibility="gone" />
+                android:textSize="@dimen/scanSize" />
         </LinearLayout>
 
         <LinearLayout

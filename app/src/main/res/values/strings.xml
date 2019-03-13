@@ -19,7 +19,7 @@
     <string name="service_started">OBD已经链接.</string>
     <string name="service_stopped">OBD 已经停止链接.</string>
     <string name="notification_label">打开  OBD-Reader.</string>
-    <string name="sdnaddblack">拉黑</string>
+    <string name="sdnaddblack">设置</string>
     <string name="action_settings">设置</string>
 
 </resources>

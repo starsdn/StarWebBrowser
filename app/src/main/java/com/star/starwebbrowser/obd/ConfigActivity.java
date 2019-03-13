@@ -50,8 +50,8 @@ public class ConfigActivity extends PreferenceActivity implements
 
         ArrayList<CharSequence> pairedDeviceStrings = new ArrayList<CharSequence>();
         ArrayList<CharSequence> vals = new ArrayList<CharSequence>();
-        ListPreference listBtDevices = (ListPreference) getPreferenceScreen()
-                .findPreference(BLUETOOTH_LIST_KEY);
+        //得到手机蓝牙设备列表
+        ListPreference listBtDevices = (ListPreference) getPreferenceScreen().findPreference(BLUETOOTH_LIST_KEY);
         String[] prefKeys = new String[] { ENGINE_DISPLACEMENT_KEY,
                 VOLUMETRIC_EFFICIENCY_KEY, UPDATE_PERIOD_KEY, MAX_FUEL_ECON_KEY };
         for (String prefKey : prefKeys) {
@@ -78,8 +78,8 @@ public class ConfigActivity extends PreferenceActivity implements
         /*
          * 蓝牙适配器连接OBD蓝牙
          */
-        final BluetoothAdapter mBtAdapter = BluetoothAdapter
-                .getDefaultAdapter();
+        //获取手机当前所有蓝牙适配器
+        final BluetoothAdapter mBtAdapter = BluetoothAdapter.getDefaultAdapter();
         if (mBtAdapter == null) {
             listBtDevices.setEntries(pairedDeviceStrings
                     .toArray(new CharSequence[0]));
@@ -113,18 +113,21 @@ public class ConfigActivity extends PreferenceActivity implements
                 });
 
         /*
-         * Get paired devices and populate preference list.
+         * 得到蓝牙设备
          */
         Set<BluetoothDevice> pairedDevices = mBtAdapter.getBondedDevices();
         if (pairedDevices.size() > 0) {
             for (BluetoothDevice device : pairedDevices) {
+                //列表显示名称
                 pairedDeviceStrings.add(device.getName() + "\n"
                         + device.getAddress());
+                //列表显示值
                 vals.add(device.getAddress());
             }
         }
         listBtDevices.setEntries(pairedDeviceStrings
                 .toArray(new CharSequence[0]));
+        //把蓝牙设备存放到 ListPreference
         listBtDevices.setEntryValues(vals.toArray(new CharSequence[0]));
     }
 
