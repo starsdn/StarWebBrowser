@@ -462,6 +462,7 @@ public class OBDDataCheck extends SuperActivity implements
         }
         else if(v==btnRead){  //读取OBD数据 并分析VIN吗
 
+            startLiveData();
             //LZWACAGA597057988
             //txtOBDVin.setText("LZWACAGA597057988");
 
