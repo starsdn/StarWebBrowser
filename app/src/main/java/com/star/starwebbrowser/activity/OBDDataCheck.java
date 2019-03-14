@@ -61,6 +61,7 @@ import static android.os.PowerManager.SCREEN_DIM_WAKE_LOCK;
 public class OBDDataCheck extends SuperActivity implements
         View.OnClickListener {
 
+    Button btnStartOBD;//连接OBD
     Button btnRead;//读取OBD信息
     Button btnAddBlack;//添加黑名单数据
     Button  btnNext;  //继续按钮
@@ -128,6 +129,7 @@ public class OBDDataCheck extends SuperActivity implements
     @SuppressWarnings({ "deprecation", "deprecation" })
     private void InitControl(){
 
+        btnStartOBD =(Button)findViewById(R.id.sdnStarObd);//开始连接OBD
         btnRead = (Button)findViewById(R.id.sdnbtnRead);
         btnNext = (Button)findViewById(R.id.btnNext);
         btnAddBlack =(Button)findViewById(R.id.sdnaddblack);
@@ -144,6 +146,7 @@ public class OBDDataCheck extends SuperActivity implements
 
         btnRead.setOnClickListener(this);
         btnNext.setOnClickListener(this);
+        btnStartOBD.setOnClickListener(this);
         btnCancle.setOnClickListener(this);
         btnPerson.setOnClickListener(this);
         btnPass.setOnClickListener(this);
@@ -459,10 +462,13 @@ public class OBDDataCheck extends SuperActivity implements
                     .setNegativeButton("取消", null).show();
                     */
             updateConfig();//打开配置按钮
+        }else  if(v==btnStartOBD){ //开始连接OBD
+            startLiveData();
+            return;
         }
         else if(v==btnRead){  //读取OBD数据 并分析VIN吗
 
-            startLiveData();
+             //startLiveData(); //先连接 OBD
             //LZWACAGA597057988
             //txtOBDVin.setText("LZWACAGA597057988");
 

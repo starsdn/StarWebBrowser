@@ -94,6 +94,18 @@
                 android:text="@string/sdnaddblack"
                 android:textColor="@color/white"
                 android:textSize="@dimen/scanSize" />
+            <Button
+                android:id="@+id/sdnStarObd"
+                android:layout_width="200px"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+
+                android:layout_marginLeft="@dimen/litterpadding"
+                android:background="@drawable/selector_button1"
+                android:minWidth="160dp"
+                android:text="连接"
+                android:textColor="@color/white"
+                android:textSize="@dimen/scanSize" />
         </LinearLayout>
 
         <LinearLayout
