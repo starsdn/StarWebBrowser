@@ -1,27 +1,27 @@
 -- Merging decision tree log ---
 manifest
-ADDED from F:\AndroidStudioProgram\StarWebBrowser_team\obdModule\src\main\AndroidManifest.xml:2:1-6:12
-INJECTED from F:\AndroidStudioProgram\StarWebBrowser_team\obdModule\src\main\AndroidManifest.xml:2:1-6:12
-INJECTED from F:\AndroidStudioProgram\StarWebBrowser_team\obdModule\src\main\AndroidManifest.xml:2:1-6:12
+ADDED from F:\ProgarmAndroid\StarWebBrowser_Team\obdModule\src\main\AndroidManifest.xml:2:1-6:12
+INJECTED from F:\ProgarmAndroid\StarWebBrowser_Team\obdModule\src\main\AndroidManifest.xml:2:1-6:12
+INJECTED from F:\ProgarmAndroid\StarWebBrowser_Team\obdModule\src\main\AndroidManifest.xml:2:1-6:12
 	package
-		ADDED from F:\AndroidStudioProgram\StarWebBrowser_team\obdModule\src\main\AndroidManifest.xml:4:5-33
-		INJECTED from F:\AndroidStudioProgram\StarWebBrowser_team\obdModule\src\main\AndroidManifest.xml
-		INJECTED from F:\AndroidStudioProgram\StarWebBrowser_team\obdModule\src\main\AndroidManifest.xml
+		ADDED from F:\ProgarmAndroid\StarWebBrowser_Team\obdModule\src\main\AndroidManifest.xml:4:5-33
+		INJECTED from F:\ProgarmAndroid\StarWebBrowser_Team\obdModule\src\main\AndroidManifest.xml
+		INJECTED from F:\ProgarmAndroid\StarWebBrowser_Team\obdModule\src\main\AndroidManifest.xml
 	xmlns:tools
-		ADDED from F:\AndroidStudioProgram\StarWebBrowser_team\obdModule\src\main\AndroidManifest.xml:3:5-51
+		ADDED from F:\ProgarmAndroid\StarWebBrowser_Team\obdModule\src\main\AndroidManifest.xml:3:5-51
 	xmlns:android
-		ADDED from F:\AndroidStudioProgram\StarWebBrowser_team\obdModule\src\main\AndroidManifest.xml:2:11-69
+		ADDED from F:\ProgarmAndroid\StarWebBrowser_Team\obdModule\src\main\AndroidManifest.xml:2:11-69
 uses-sdk
-INJECTED from F:\AndroidStudioProgram\StarWebBrowser_team\obdModule\src\main\AndroidManifest.xml reason: use-sdk injection requested
-INJECTED from F:\AndroidStudioProgram\StarWebBrowser_team\obdModule\src\main\AndroidManifest.xml
-INJECTED from F:\AndroidStudioProgram\StarWebBrowser_team\obdModule\src\main\AndroidManifest.xml
-INJECTED from F:\AndroidStudioProgram\StarWebBrowser_team\obdModule\src\main\AndroidManifest.xml
-INJECTED from F:\AndroidStudioProgram\StarWebBrowser_team\obdModule\src\main\AndroidManifest.xml
+INJECTED from F:\ProgarmAndroid\StarWebBrowser_Team\obdModule\src\main\AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from F:\ProgarmAndroid\StarWebBrowser_Team\obdModule\src\main\AndroidManifest.xml
+INJECTED from F:\ProgarmAndroid\StarWebBrowser_Team\obdModule\src\main\AndroidManifest.xml
+INJECTED from F:\ProgarmAndroid\StarWebBrowser_Team\obdModule\src\main\AndroidManifest.xml
+INJECTED from F:\ProgarmAndroid\StarWebBrowser_Team\obdModule\src\main\AndroidManifest.xml
 	android:targetSdkVersion
-		INJECTED from F:\AndroidStudioProgram\StarWebBrowser_team\obdModule\src\main\AndroidManifest.xml
-		ADDED from F:\AndroidStudioProgram\StarWebBrowser_team\obdModule\src\main\AndroidManifest.xml
-		INJECTED from F:\AndroidStudioProgram\StarWebBrowser_team\obdModule\src\main\AndroidManifest.xml
+		INJECTED from F:\ProgarmAndroid\StarWebBrowser_Team\obdModule\src\main\AndroidManifest.xml
+		ADDED from F:\ProgarmAndroid\StarWebBrowser_Team\obdModule\src\main\AndroidManifest.xml
+		INJECTED from F:\ProgarmAndroid\StarWebBrowser_Team\obdModule\src\main\AndroidManifest.xml
 	android:minSdkVersion
-		INJECTED from F:\AndroidStudioProgram\StarWebBrowser_team\obdModule\src\main\AndroidManifest.xml
-		ADDED from F:\AndroidStudioProgram\StarWebBrowser_team\obdModule\src\main\AndroidManifest.xml
-		INJECTED from F:\AndroidStudioProgram\StarWebBrowser_team\obdModule\src\main\AndroidManifest.xml
+		INJECTED from F:\ProgarmAndroid\StarWebBrowser_Team\obdModule\src\main\AndroidManifest.xml
+		ADDED from F:\ProgarmAndroid\StarWebBrowser_Team\obdModule\src\main\AndroidManifest.xml
+		INJECTED from F:\ProgarmAndroid\StarWebBrowser_Team\obdModule\src\main\AndroidManifest.xml
