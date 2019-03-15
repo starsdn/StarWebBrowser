@@ -65,7 +65,7 @@ public class MainActivity extends SuperActivity implements OnClickListener {
 
         //webView.loadUrl("file:///android_asset/demo.html");
         webView.loadUrl("http://122.193.27.194:2000/PDAInspection/AppH5/start.html");
-
+        //webView.loadUrl("http://192.168.1.58:8017/start.html");
 
         /* * ** 注册供 JS调用的 ScanQR 打开二维码扫描界面** **/
         webView.registerHandler("ScanQR", new BridgeHandler() {
