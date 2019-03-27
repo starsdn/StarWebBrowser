@@ -62,9 +62,9 @@ public class MainActivity extends SuperActivity implements OnClickListener {
         webView.setWebChromeClient(new WebChromeClient() {
 
         });
-
+        webView.loadUrl("file:///android_asset/start.html");
         //webView.loadUrl("file:///android_asset/demo.html");
-        webView.loadUrl("http://122.193.27.194:2000/PDAInspection/AppH5/start.html");
+        // webView.loadUrl("http://122.193.27.194:2000/PDAInspection/AppH5/start.html");
         //webView.loadUrl("http://192.168.1.58:8017/start.html");
 
         /* * ** 注册供 JS调用的 ScanQR 打开二维码扫描界面** **/
@@ -88,6 +88,15 @@ public class MainActivity extends SuperActivity implements OnClickListener {
                 Intent obdIntent = new Intent(MainActivity.this, OBDDataCheck.class);
                 obdIntent.putExtra("clsbdh", data); // 车辆识别代号
                 startActivityForResult(obdIntent, 4);
+            }
+        });
+        /**
+         * js调用获取手机端VERSION版本号，用于软件更新
+         */
+        webView.registerHandler("GetVersion", new BridgeHandler() {
+            @Override
+            public void handler(String data, CallBackFunction function) {
+                function.onCallBack(MainActivity.this.app.VERSION);//拿到对应的app VERSION版本号
             }
         });
         /* * ** 注册供 JS调用的ShotCamera 打开拍照界面** **/
@@ -251,7 +260,7 @@ public class MainActivity extends SuperActivity implements OnClickListener {
      */
     public void StartVideo(Object[] arrayOfObject) {
         if (SPUtils.readBoolean(this, "enablevideo")) {
-           // ProgressDialog.Show(this);
+            // ProgressDialog.Show(this);
             TcpCommandTask localTcpCommandTask = new TcpCommandTask();
            /* Object[] arrayOfObject = new Object[6];
             arrayOfObject[0] = "号牌号码";
@@ -274,7 +283,7 @@ public class MainActivity extends SuperActivity implements OnClickListener {
      */
     public void StopVideo(Object[] arrayOfObject) {
         if (SPUtils.readBoolean(this, "enablevideo")) {
-           // ProgressDialog.Show(this);
+            // ProgressDialog.Show(this);
             TcpCommandTask localTcpCommandTask = new TcpCommandTask();
             localTcpCommandTask.execute(new String[]{String
                     .format("<?xml version=\"1.0\" encoding=\"GB2312\"?><diagram type=\"end\" hphm=\"%s\" hpzl=\"%s\" jcxxh=\"%s\" clsbdh=\"%s\" " +

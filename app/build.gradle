@@ -2,12 +2,6 @@ apply plugin: 'com.android.application'
 
 android {
     signingConfigs {
-        config {
-            keyAlias 'starapp'
-            keyPassword 'star123'
-            storeFile file('D:/adt-bundle-windows/starApp.jks')
-            storePassword 'star123'
-        }
     }
     compileSdkVersion 28
     defaultConfig {
@@ -23,6 +17,10 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+        debug {
+        }
+    }
+    productFlavors {
     }
 }
 
