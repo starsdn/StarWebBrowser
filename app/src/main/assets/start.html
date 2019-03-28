@@ -1,0 +1,89 @@
+﻿<!DOCTYPE html>
+<html lang="en-US">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="initial-scale=1, maximum-scale=1">
+	<title>开机页</title>
+	<meta name="viewport" content="initial-scale=1, maximum-scale=1">
+	<link rel="shortcut icon" href="/favicon.ico">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<link rel="stylesheet" href="staticfile/css/sm.min.css">
+	<style>
+.bodycontent {
+	margin: 0;
+	padding: 0;
+	width: 100%;
+	height: 100%;
+	background: #ffffff url(image/index.png);
+	background-size: 100% 100%;
+	background-repeat: no-repeat;
+}
+</style>
+
+</head>
+<body>
+<div class="page-group">
+	<!-- 单个page ,第一个.page默认被展示-->
+	<div class="page" style="display:block">
+		<!-- <nav class="bar bar-tab">
+        <a class="tab-item external" href="#"> <span class="tab-label">设置</span>
+        </a>
+    </nav> -->
+		<!-- 这里是页面内容区 -->
+		<div class="bodycontent"></div>
+	</div>
+</div>
+<script type='text/javascript' src='staticfile/js/zepto.min.js'
+		charset='utf-8'></script>
+<script type='text/javascript' src='staticfile/js/sm.min.js'
+		charset='utf-8'></script>
+<script>
+		$(window).on("load", function() {
+			setTimeout(function() {
+				ReadStr() ;
+			}, 500);
+		})
+	
+		function setwebUrl() {
+			$.prompt('请输入网页基础地址',
+				function(value) { //确认
+					SaveStr(value) ;
+					window.location.href = value + "/PDAInspection/AppH5/login.html";
+				},
+				function(value) { //取消
+
+				}
+			);
+		}
+
+		function SaveStr(value) {
+			window.WebViewJavascriptBridge.callHandler(
+				'SaveStr', {
+					"_key" : "weburl",
+					"_value" : value
+				},
+				function(responseData) {
+					//$.alert("send " + responseData);
+				}
+			);
+		}
+
+		function ReadStr() {
+			window.WebViewJavascriptBridge.callHandler(
+				'ReadStr', "weburl",
+				function(responseData) {
+					if (responseData == "") {
+						setwebUrl();
+					} else {
+						setTimeout(function() {
+							window.location.href = responseData + "/PDAInspection/AppH5/login.html";
+						}, 1000);
+					}
+				}
+			);
+		}
+	</script>
+</body>
+</html>
