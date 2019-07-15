@@ -13,6 +13,7 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebViewClient;
 import android.widget.Button;
+import android.content.ComponentName;
 
 import com.star.library.jsbridge.BridgeHandler;
 import com.star.library.jsbridge.BridgeWebView;
@@ -62,8 +63,8 @@ public class MainActivity extends SuperActivity implements OnClickListener {
         webView.setWebChromeClient(new WebChromeClient() {
 
         });
-        webView.loadUrl("file:///android_asset/start.html");
-        //webView.loadUrl("file:///android_asset/demo.html");
+       // webView.loadUrl("file:///android_asset/start.html");
+        webView.loadUrl("file:///android_asset/demo.html");
         // webView.loadUrl("http://122.193.27.194:2000/PDAInspection/AppH5/start.html");
         //webView.loadUrl("http://192.168.1.58:8017/start.html");
 
@@ -75,6 +76,28 @@ public class MainActivity extends SuperActivity implements OnClickListener {
                 CaptureIntent = new Intent(MainActivity.this, CaptureActivity.class);
                 startActivityForResult(CaptureIntent, 3);
                 function.onCallBack("Response_sdn"); //响应JS请求
+//                try
+//                {
+//                    Intent localIntent = new Intent("android.intent.action.VIEW");
+//                    localIntent.setComponent(new ComponentName("com.seatrend.obd.app", "com.seatrend.obd.app.RequestAction"));
+//                    localIntent.putExtra("cylsh", "123456");
+//                    localIntent.putExtra("clsbdh", "123456");
+//                    localIntent.putExtra("clxh","K33");
+//                    localIntent.putExtra("clpp1", "三菱");
+//                    localIntent.putExtra("clpp2", "");
+//                    localIntent.putExtra("rlzl", "");
+//                    localIntent.putExtra("cllx", "");
+//                    localIntent.putExtra("keystr", "");
+//                    localIntent.putExtra("time", "");
+//                    startActivityForResult(localIntent, 3);
+//                   // return;
+//                }
+//                catch (Exception paramVehcrp)
+//                {
+//                  //  ViewUtil.toast(paramActivity, "请先安装OBD插件");
+//                    showToast("请先安装OBD插件");
+//                }
+//                function.onCallBack("Response_sdn"); //响应JS请求
             }
         });
         /**
