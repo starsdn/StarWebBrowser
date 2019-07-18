@@ -79,7 +79,7 @@ public class MainActivity extends SuperActivity implements OnClickListener {
 //                try
 //                {
 //                    Intent localIntent = new Intent("android.intent.action.VIEW");
-//                    localIntent.setComponent(new ComponentName("com.seatrend.obd.app", "com.seatrend.obd.app.RequestAction"));
+//                    localIntent.setComponent(new ComponentName("com.tmri.obd.app", "com.tmri.obd.app.RequestAction")); //seatrend
 //                    localIntent.putExtra("cylsh", "123456");
 //                    localIntent.putExtra("clsbdh", "123456");
 //                    localIntent.putExtra("clxh","K33");
