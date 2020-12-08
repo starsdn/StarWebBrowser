@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_gravity="center"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:layout_marginTop="5.0dip"
+    android:layout_marginBottom="5.0dip">
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="35.0dip">
+        <TextView
+            android:textSize="16.0dip"
+            android:textColor="#ffffffff"
+            android:layout_gravity="center_vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="35.0dip"
+            android:layout_marginLeft="1.0dip"
+            android:layout_marginTop="0.0dip"
+            android:layout_marginRight="1.0dip"
+            android:text="IP地址"
+            android:singleLine="true" />
+        <EditText
+            android:textSize="13.0dip"
+            android:layout_gravity="center_vertical"
+            android:id="@+id/ipAddress"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginLeft="1.0dip"
+            android:layout_marginRight="1.0dip"
+            android:ems="10" />
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="35.0dip">
+        <TextView
+            android:textSize="16.0dip"
+            android:textColor="#ffffffff"
+            android:layout_gravity="center_vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="35.0dip"
+            android:layout_marginLeft="1.0dip"
+            android:layout_marginTop="0.0dip"
+            android:layout_marginRight="1.0dip"
+            android:text="端口号"
+            android:singleLine="true" />
+        <EditText
+            android:textSize="13.0dip"
+            android:layout_gravity="center_vertical"
+            android:id="@+id/port"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginLeft="1.0dip"
+            android:layout_marginRight="1.0dip"
+            android:ems="10" />
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="35.0dip">
+        <TextView
+            android:textSize="16.0dip"
+            android:textColor="#ffffffff"
+            android:layout_gravity="center_vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="35.0dip"
+            android:layout_marginLeft="1.0dip"
+            android:layout_marginTop="0.0dip"
+            android:layout_marginRight="1.0dip"
+            android:text="服务IP"
+            android:singleLine="true" />
+        <EditText
+            android:textSize="13.0dip"
+            android:layout_gravity="center_vertical"
+            android:id="@+id/serviceip"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginLeft="1.0dip"
+            android:layout_marginRight="1.0dip"
+            android:ems="10" />
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="35.0dip">
+        <TextView
+            android:textSize="16.0dip"
+            android:textColor="#ffffffff"
+            android:layout_gravity="center_vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="35.0dip"
+            android:layout_marginLeft="1.0dip"
+            android:layout_marginTop="0.0dip"
+            android:layout_marginRight="1.0dip"
+            android:text="服务端口"
+            android:singleLine="true" />
+        <EditText
+            android:textSize="13.0dip"
+            android:layout_gravity="center_vertical"
+            android:id="@+id/serviceport"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginLeft="1.0dip"
+            android:layout_marginRight="1.0dip"
+            android:ems="10" />
+    </LinearLayout>
+</LinearLayout>

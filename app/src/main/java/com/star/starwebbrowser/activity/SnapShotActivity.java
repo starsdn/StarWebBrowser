@@ -99,9 +99,9 @@ public class SnapShotActivity extends SuperActivity implements
             zoomTimes = ((TextView) findViewById(R.id.zoomtimes));
             snapok.setEnabled(false);
             Intent localIntent = getIntent();
-            snapfield = localIntent.getStringExtra("field");
-            fieldname = localIntent.getStringExtra("fieldname");
-            strClsbdh = localIntent.getStringExtra("clsbdh");
+            snapfield = localIntent.getStringExtra("field"); //照片种类
+            fieldname = localIntent.getStringExtra("fieldname"); //照片显示名称
+            strClsbdh = localIntent.getStringExtra("clsbdh"); //车辆识别代号
             //queue_id = localIntent.getStringExtra("queue_id");
             if (strClsbdh == null) {
                 strClsbdh = "";
@@ -241,30 +241,20 @@ public class SnapShotActivity extends SuperActivity implements
         return true;
     }
 
+    //region 摄像头控制处理方法
     private Camera.AutoFocusCallback mAutoFocusCallBack = new Camera.AutoFocusCallback() {
         @SuppressWarnings("deprecation")
         @SuppressLint("NewApi")
-        public void onAutoFocus(boolean paramAnonymousBoolean,
-                                Camera paramAnonymousCamera) {
+        public void onAutoFocus(boolean paramAnonymousBoolean, Camera paramAnonymousCamera) {
             try {
                 Camera.Parameters localParameters = SnapShotActivity.this.myCamera.getParameters();
                 localParameters.setPictureFormat(PixelFormat.JPEG);
                 //localParameters.setFlashMode(SnapShotActivity.this.FlashMode[SnapShotActivity.this.curFlashMode]);
                 SnapShotActivity.this.myCamera.setParameters(localParameters);
-                SnapShotActivity.this.myCamera.takePicture(
-                        SnapShotActivity.this.mShutterCallback, null,
-                        SnapShotActivity.this.myjpegCallback);
+                SnapShotActivity.this.myCamera.takePicture(SnapShotActivity.this.mShutterCallback, null, SnapShotActivity.this.myjpegCallback);
                 return;
             } catch (Exception localException) {
                 Log.v("onAutoFocus", localException.getMessage());
-				/*   单氐楠  2016年11月18日18:00:12 注释  有些地方报错  但能够正常拍照
-				new AlertDialog.Builder(SnapShotActivity.this)
-						.setTitle("操作失败")
-						.setMessage(
-								"onAutoFocus " + localException.getMessage())
-						.setPositiveButton("确定", null).show();
-
-						*/
             }
         }
     };
@@ -275,19 +265,16 @@ public class SnapShotActivity extends SuperActivity implements
 
 
     Camera.PictureCallback myjpegCallback = new Camera.PictureCallback() {
-        public void onPictureTaken(byte[] paramAnonymousArrayOfByte,
-                                   Camera paramAnonymousCamera) {
+        public void onPictureTaken(byte[] paramAnonymousArrayOfByte, Camera paramAnonymousCamera) {
             try {
-                Bitmap localBitmap1 = BitmapFactory.decodeByteArray(
-                        paramAnonymousArrayOfByte, 0,
-                        paramAnonymousArrayOfByte.length);
+                Bitmap localBitmap1 = BitmapFactory.decodeByteArray(paramAnonymousArrayOfByte, 0, paramAnonymousArrayOfByte.length);
                 String str = strClsbdh;// 得到相应的检测项目
                 String strHPHM = SPUtils.readString(SnapShotActivity.this, "hphm");// 号牌号码
                 Object localObject;
                 if (!str.trim().equals("")) {
                     localObject = ImageDeal.AddTextToImage(localBitmap1, " " + str);
                 } else {
-                    localObject = ImageDeal.AddTextToImage(localBitmap1, SnapShotActivity.this.fieldname);
+                    localObject = ImageDeal.AddTextToImage(localBitmap1,strHPHM+" "+ SnapShotActivity.this.fieldname);
                 }
                 curBitMap = ((Bitmap) localObject);
                 myCamera.stopPreview();
@@ -299,8 +286,7 @@ public class SnapShotActivity extends SuperActivity implements
                 Log.v("onPictureTaken", localException.getMessage());
                 new AlertDialog.Builder(SnapShotActivity.this)
                         .setTitle("操作失败")
-                        .setMessage(
-                                "onPictureTaken " + localException.getMessage())
+                        .setMessage("onPictureTaken " + localException.getMessage())
                         .setPositiveButton("确定", null).show();
             }
         }
@@ -469,27 +455,23 @@ public class SnapShotActivity extends SuperActivity implements
                 Camera.Parameters localParameters = this.myCamera
                         .getParameters(); // 得到摄像机的设置参数
                 localParameters.setPictureFormat(PixelFormat.JPEG); // 设置图片格式
-                List<Size> localList = localParameters
-                        .getSupportedPictureSizes(); // 获取受支持的图片大小
+                List<Size> localList = localParameters.getSupportedPictureSizes(); // 获取受支持的图片大小
                 Object localObject = null;
                 if (localList != null) {
-                    int iWidth = 640; // 相片宽度
-                    int iHeight = 480; // 相片高度
-					/*
-					for (int num = 0; num < localList.size(); num++) {
-						localObject = localList.get(num);
-						if (((Camera.Size) localObject).width >= 500 && ((Camera.Size) localObject).width < 1000) {
-							iHeight = ((Camera.Size) localObject).height; // 照片高度
-							iWidth = ((Camera.Size) localObject).width; // 照片宽度
-							break;
-						}
-					}
-					if (localObject != null) {
-						// localParameters.setPictureSize(800, 600);// 设置照片
-						localParameters.setPictureSize(iWidth, iHeight);// 设置照片
-					}
-					*/
-                    localParameters.setPictureSize(iWidth, iHeight);// 设置照片
+                    int iWidth = 800; // 相片宽度
+                    int iHeight = 600; // 相片高度
+                    for (int num = 0; num < localList.size(); num++) {
+                        localObject = localList.get(num);
+                        if (((Camera.Size) localObject).width >= 800 && ((Camera.Size) localObject).height <= 1200) {
+                            iWidth = ((Camera.Size) localObject).width;
+                            iHeight = ((Camera.Size) localObject).height;
+                            break;
+                        }
+                    }
+                    if (localObject != null) {
+                        localParameters.setPictureSize(iWidth, iHeight);// 设置照片
+                    }
+                  //  localParameters.setPictureSize(iWidth, iHeight);// 设置照片
                     if (this.getResources().getConfiguration().orientation != Configuration.ORIENTATION_LANDSCAPE) {
                         // 如果是竖屏
                         localParameters.set("orientation", "portrait");
@@ -500,11 +482,8 @@ public class SnapShotActivity extends SuperActivity implements
                         // 在2.2以上可以使用
                         // camera.setDisplayOrientation(0);
                     }
-
                     localParameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE); //自动对焦
-
                     localParameters.setFlashMode(this.FlashMode[this.curFlashMode]); //设置闪光灯
-
                     myCamera.setParameters(localParameters);
                     try {
                         // 设置显示
@@ -520,29 +499,22 @@ public class SnapShotActivity extends SuperActivity implements
                 }
             } catch (Exception localException) {
                 // Log.v("surfaceCreated", localException.getMessage());
-                new AlertDialog.Builder(this)
-                        .setTitle("操作失败")
-                        .setMessage(
-                                "surfaceCreated " + localException.getMessage())
+                new AlertDialog.Builder(this).setTitle("操作失败")
+                        .setMessage("surfaceCreated " + localException.getMessage())
                         .setPositiveButton("确定", null).show();
             }
-
         } catch (Exception localException) {
             Log.v("surfaceCreated", localException.getMessage());
-            new AlertDialog.Builder(this)
-                    .setTitle("操作失败")
+            new AlertDialog.Builder(this).setTitle("操作失败")
                     .setMessage("surfaceCreated " + localException.getMessage())
                     .setPositiveButton("确定", null).show();
         }
     }
-
     @Override
-    public void surfaceChanged(SurfaceHolder holder, int format, int width,
-                               int height) {
+    public void surfaceChanged(SurfaceHolder holder, int format, int width,int height) {
         // TODO Auto-generated method stub
 
     }
-
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
         // TODO Auto-generated method stub
@@ -551,7 +523,6 @@ public class SnapShotActivity extends SuperActivity implements
         myCamera.release();
         myCamera = null;
     }
-
     @Override
     public boolean onKeyDown(int paramInt, KeyEvent paramKeyEvent) {
         if (paramInt == 4) {
@@ -559,7 +530,6 @@ public class SnapShotActivity extends SuperActivity implements
         }
         return super.onKeyDown(paramInt, paramKeyEvent);
     }
-
     /**
      * 模式 NONE：无 DRAG：拖拽. ZOOM:缩放
      *
@@ -569,17 +539,10 @@ public class SnapShotActivity extends SuperActivity implements
         NONE, DRAG, ZOOM
 
     }
-
-    ;
-
     private int start_x, start_y, current_x, current_y;// 触摸位置
-
     // private float beforeLenght, afterLenght;// 两触点距离
-
     private float scale_temp;// 缩放比例
-
     private MODE mode = MODE.NONE;// 默认模式
-
     /***
      * touch 事件
      */
@@ -609,7 +572,6 @@ public class SnapShotActivity extends SuperActivity implements
                 // }
                 break;
         }
-
         return true;
     }
 
@@ -645,7 +607,6 @@ public class SnapShotActivity extends SuperActivity implements
         }
         beforeLenght = this.afterLenght;
     }
-
     /**
      * 按下
      **/
@@ -653,6 +614,7 @@ public class SnapShotActivity extends SuperActivity implements
         mode = MODE.DRAG;
 
     }
+    //endregion
 
 }
 

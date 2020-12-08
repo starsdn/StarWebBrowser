@@ -1,34 +1,44 @@
 package com.star.starwebbrowser.activity;
 
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.WindowManager;
 import android.webkit.WebChromeClient;
-import android.webkit.WebSettings;
-import android.webkit.WebViewClient;
 import android.widget.Button;
-import android.content.ComponentName;
+import android.widget.EditText;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.star.library.jsbridge.BridgeHandler;
 import com.star.library.jsbridge.BridgeWebView;
 import com.star.library.jsbridge.CallBackFunction;
 import com.star.library.jsbridge.DefaultHandler;
-import com.google.gson.Gson;
+import com.star.starwebbrowser.R;
+import com.star.starwebbrowser.event.MainHandler;
 import com.star.starwebbrowser.model.SaveData;
 import com.star.starwebbrowser.model.VideoData;
-import com.star.starwebbrowser.tcp.TcpCleint;
-import com.star.starwebbrowser.utils.ProgressDialog;
 import com.star.starwebbrowser.save.SPUtils;
-import com.star.starwebbrowser.R;
+import com.star.starwebbrowser.service.HttpService;
+import com.star.starwebbrowser.tcp.TcpCleint;
 import com.star.starwebbrowser.utils.ImageUtils;
+import com.star.starwebbrowser.utils.ProgressDialog;
 
-import java.io.File;
+import java.io.IOException;
 
 public class MainActivity extends SuperActivity implements OnClickListener {
 
@@ -38,13 +48,26 @@ public class MainActivity extends SuperActivity implements OnClickListener {
     Uri imageUri;
     int isdnIsSame = 1;//扫描VIN是否与OBD读取到的VIN一致 0:不一致 1:一致 2:未知
     String code = "";//拍照种类代码
+    EditText ip; //ip配置界面 Ip输入框
+    EditText port; //ip配置界面  端口输入框
+    EditText serviceIP;//服务IP
+    EditText servicePort;//服务端口
+    String strIP;//socke服务ip
+    String strPort;//socket服务port
+
+    String hphm;//当前办理车辆的号牌号码
+    String hpzl;//当前办理车辆的号牌种类
+    String zpzl;//当前办理车辆的照片种类
+    String xsnr;//当前办理车辆的照片的显示类型
+    HttpService httpServer;//http服务
+    Handler mainHandler; //主handle
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON); // 设置屏幕常亮
         webView = (BridgeWebView) findViewById(R.id.webView);
 
         /* ** 配置浏览器缓存*/
@@ -63,7 +86,7 @@ public class MainActivity extends SuperActivity implements OnClickListener {
         webView.setWebChromeClient(new WebChromeClient() {
 
         });
-       // webView.loadUrl("file:///android_asset/start.html");
+        // webView.loadUrl("file:///android_asset/start.html");
         webView.loadUrl("file:///android_asset/demo.html");
         // webView.loadUrl("http://122.193.27.194:2000/PDAInspection/AppH5/start.html");
         //webView.loadUrl("http://192.168.1.58:8017/start.html");
@@ -100,6 +123,7 @@ public class MainActivity extends SuperActivity implements OnClickListener {
 //                function.onCallBack("Response_sdn"); //响应JS请求
             }
         });
+
         /**
          * 调用OBD读取页面
          * JS 页面调用时传递车辆识别代号 clsbdh
@@ -107,7 +131,6 @@ public class MainActivity extends SuperActivity implements OnClickListener {
         webView.registerHandler("ReadOBD", new BridgeHandler() {
             @Override
             public void handler(String data, CallBackFunction function) {
-
                 Intent obdIntent = new Intent(MainActivity.this, OBDDataCheck.class);
                 obdIntent.putExtra("clsbdh", data); // 车辆识别代号
                 startActivityForResult(obdIntent, 4);
@@ -129,13 +152,12 @@ public class MainActivity extends SuperActivity implements OnClickListener {
                 // new Gson().fromJson(data,)
                 Gson gsonCamera = new Gson();
                 GetCameraJson jsonClass = gsonCamera.fromJson(data, GetCameraJson.class);
-
                 Intent CaptureIntent;
                 CaptureIntent = new Intent(MainActivity.this, SnapShotActivity.class);
                 CaptureIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 code = jsonClass.code; //给全局拍照种类赋值，拍照结束时回调
-                CaptureIntent.putExtra("field", jsonClass.code);
-                CaptureIntent.putExtra("fieldname", jsonClass.codename);
+                CaptureIntent.putExtra("field", jsonClass.code);//照片种类
+                CaptureIntent.putExtra("fieldname", jsonClass.codename); //显示内容
                 CaptureIntent.putExtra("clsbdh", jsonClass.clsbdh); // 车辆识别代号
                 startActivityForResult(CaptureIntent, 5);
                 function.onCallBack("Response_sdn_camera"); //响应JS请求
@@ -166,6 +188,67 @@ public class MainActivity extends SuperActivity implements OnClickListener {
                 function.onCallBack(strValue);
             }
         });
+        /**
+         * 提供给JS调用 打开录像界面
+         */
+        webView.registerHandler("RecVideo", new BridgeHandler() {
+            @Override
+            public void handler(String data, CallBackFunction function) {
+                Intent localIntent = new Intent("android.intent.action.VIEW");
+                localIntent.setComponent(new ComponentName("com.star.video.starrec", "com.star.video.starrec.RecActivity"));
+                // SharedPreferences localStroage = getSharedPreferences("com.sdxk", 0);
+                SharedPreferences localStroage = getSharedPreferences("com.sdxk", 0);
+                String strHphm = localStroage.getString("lpnumber", "E00000");
+                localIntent.putExtra("hphm", strHphm);
+                // localIntent.putExtra("hphm","苏E00000");
+                String strHpzl = localStroage.getString("lptype", "02");
+                localIntent.putExtra("hpzl", strHpzl);
+                //localIntent.putExtra("hpzl","02");
+                localIntent.putExtra("vectype", localStroage.getString("vectype", ""));
+                String sdnSerIp = SPUtils.readString(MainActivity.this, "serviceip");
+                String sdnSerPort = SPUtils.readString(MainActivity.this, "serviceport");
+                localIntent.putExtra("ip", sdnSerIp);
+                localIntent.putExtra("port", sdnSerPort);
+                startActivityForResult(localIntent, 1);
+                function.onCallBack("Response_sdn_camera"); //响应JS请求
+            }
+        });
+
+        /**
+         * 打开ip配置界面
+         */
+        webView.registerHandler("configIp", new BridgeHandler() {
+            @Override
+            public void handler(String data, CallBackFunction function) {
+                View localView = getLayoutInflater().inflate(R.layout.ipconfig, null);
+                MainActivity.this.ip = ((EditText) localView.findViewById(R.id.ipAddress));
+                MainActivity.this.port = ((EditText) localView.findViewById(R.id.port));
+                MainActivity.this.serviceIP = (EditText) localView.findViewById(R.id.serviceip); //服务IP
+                MainActivity.this.servicePort = (EditText) localView.findViewById(R.id.serviceport);//服务
+                ip.setText(SPUtils.readString(MainActivity.this, "ip"));
+                port.setText(SPUtils.readString(MainActivity.this, "port"));
+                serviceIP.setText(SPUtils.readString(MainActivity.this, "serviceip"));//读取缓存的服务IP
+                servicePort.setText(SPUtils.readString(MainActivity.this, "serviceport"));//读取服务端口
+                new android.app.AlertDialog.Builder(MainActivity.this).setTitle("IP配置").setView(localView)
+                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            public void onClick(
+                                    DialogInterface paramAnonymousDialogInterface,
+                                    int paramAnonymousInt) {
+                                String str1 = ip.getText().toString();
+                                String str2 = port.getText().toString();
+                                String strServiceIP = serviceIP.getText().toString();
+                                String strServicePort = servicePort.getText().toString();
+                                SPUtils.saveString(MainActivity.this, "ip", str1);
+                                SPUtils.saveString(MainActivity.this, "port", str2.trim());
+                                SPUtils.saveString(MainActivity.this, "serviceip", strServiceIP);
+                                SPUtils.saveString(MainActivity.this, "serviceport", strServicePort);
+                            }
+                        }).setNegativeButton("取消", null).show();
+            }
+        });
+
+
+        //region  app webView开放的录像开始/结束 js函数
         /***
          * 开始录像
          * 参数 JSON 格式数据 {}
@@ -212,13 +295,47 @@ public class MainActivity extends SuperActivity implements OnClickListener {
                 function.onCallBack("结束录像成功");
             }
         });
-        webView.send("start");
+        //endregion
 
+        webView.send("start");
+        //启动http服务监听请求
+        String strPort = SPUtils.readString(MainActivity.this, "port");
+        if(strPort==null || strPort.equals("")){
+            strPort="51001";
+        }
+        httpServer = new HttpService(Integer.parseInt(strPort));
+        // httpServer = new HttpServer();
+        try {
+            httpServer.start();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        this.mainHandler = new MyHandler(Looper.getMainLooper());
+        MainHandler.Init(mainHandler);
     }
 
+    //region 跳转activity返回结果处理
+    /**
+     * Intent 跳转返回
+     *
+     * @param requestCode
+     * @param resultCode
+     * @param intent
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         switch (requestCode) {
+            case 1://录像
+                //此处可以根据两个Code进行判断，本页面和结果页面跳过来的值
+                if (resultCode == 1) {
+                    boolean result = intent.getBooleanExtra("result", false);
+                    if (result) {
+                        //  SetUIState(UISTATE.usComplete); //完成
+                    } else {
+                        //  SetUIState(UISTATE.usRecode); //录像
+                    }
+                }
+                break;
             case 3://扫描二维码
                 String strScanValue = intent.getExtras().getString("scanValue"); //得到对应的扫描结果
                 webView.callHandler("showQRvalue", strScanValue, new CallBackFunction() {
@@ -230,7 +347,6 @@ public class MainActivity extends SuperActivity implements OnClickListener {
                 });
                 break;
             case 4://OBD对接
-
                 int opetype_obd = intent.getExtras().getInt("optype_obd"); //得到页面返回值
                 String obd_readdata = SPUtils.readString(MainActivity.this, "obd_readdata");
                 String strObdVin = intent.getExtras().getString("obdvin");
@@ -273,8 +389,11 @@ public class MainActivity extends SuperActivity implements OnClickListener {
             default:
         }
     }
+    //endregion
 
     /* ************ 以下是 Socket通讯******************** */
+
+    //region  APP控制服务端是否录像
 
     /**
      * 开始录像
@@ -354,6 +473,7 @@ public class MainActivity extends SuperActivity implements OnClickListener {
         }
 
     }
+    //endregion
 
     /* *************以上是 Socket通讯******************* */
 
@@ -378,4 +498,40 @@ public class MainActivity extends SuperActivity implements OnClickListener {
         //字符串图片
         String strImg;
     }
+
+    private class MyHandler extends Handler{
+        public MyHandler(Looper looper) {
+            super(looper);
+        }
+        @Override
+        public void handleMessage(Message msg) {
+            //super.handleMessage(msg);
+            MainHandler mainHandler = (MainHandler) msg.obj;
+            switch (mainHandler.msgType){
+                case CMD: //得到指令开始处理照片
+                    //编写拍照&处理照片的指令
+                    JsonObject json_data = new JsonParser().parse(mainHandler.Info).getAsJsonObject();//得到对应的json字符串
+                    //解析json {"type":"cmd","data":{"hphm":"","hpzl":"","zpzl":"","xsnr":"","lx":"0 照片 1视频"}}
+                    hphm = json_data.get("hphm").getAsString();//得到号牌号码
+                    SPUtils.saveString(MainActivity.this,"hphm",hphm); //保存到本地
+                    hpzl = json_data.get("hpzl").getAsString();//得到号牌种类
+                    SPUtils.saveString(MainActivity.this,"hpzl",hpzl);
+                    zpzl = json_data.get("zpzl").getAsString();//照片种类
+                    SPUtils.saveString(MainActivity.this,"zpzl",zpzl);
+                    String strInfo = "{\"content\":\"%s\",\"type\":\"%s\"}";
+                    strInfo = String.format(strInfo, "收到拍照指令，请拍摄:"+json_data.get("xsnr"),1);
+                    webView.callHandler("js_show_log", strInfo, new CallBackFunction() {
+                        @Override
+                        public void onCallBack(String data) {
+                            //调用前台js函数的返回值
+                        }
+                    });
+                    break;
+                case CMDEND://得到结束的命令
+                    //处理收到
+                    break;
+            }
+        }
+    }
+
 }

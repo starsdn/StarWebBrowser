@@ -33,10 +33,10 @@ public class ImageDeal {
         localPaint1.setFilterBitmap(true);
         localCanvas.drawBitmap(paramBitmap, new Rect(0, 0, paramBitmap.getWidth(), paramBitmap.getHeight()), new Rect(0, 0, i, j), localPaint1);
         Paint localPaint2 = new Paint(257);
-        localPaint2.setTextSize(25.0F);
-        localPaint2.setARGB(200, 255, 0, 0);
+        localPaint2.setTextSize(16.0F);
+        localPaint2.setARGB(100, 255, 0, 0);
         localPaint2.setTypeface(Typeface.DEFAULT_BOLD);
-        localCanvas.drawText(str, 70.0F, 56.0F, localPaint2);
+        localCanvas.drawText(str, 20.0F, 26.0F, localPaint2);
         localCanvas.save();
         localCanvas.restore();
         return localBitmap;
