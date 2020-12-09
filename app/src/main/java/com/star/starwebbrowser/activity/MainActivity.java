@@ -265,7 +265,7 @@ public class MainActivity extends SuperActivity implements OnClickListener {
         });
         //endregion
 
-
+        //此处用作给定前端初始值
         webView.send("start");
         //启动http服务监听请求
 
@@ -501,7 +501,12 @@ public class MainActivity extends SuperActivity implements OnClickListener {
                     //控制前台按钮事件
                     break;
                 case CMDEND://得到结束的命令
-                    //处理收到
+                    //处理收到  清空缓存数据
+                    SPUtils.saveString(MainActivity.this, "hphm", ""); //保存到本地
+                    SPUtils.saveString(MainActivity.this, "hpzl", "");
+                    SPUtils.saveString(MainActivity.this, "zpzl", "");
+                    SPUtils.saveString(MainActivity.this,"clsbdh","");
+                    SPUtils.saveString(MainActivity.this,"jylsh","");
                     htmlShow(String.format(strInfo, "已完成监测，等待下一辆车" , 1));
                     break;
                 case SEND_FAIL://发送失败

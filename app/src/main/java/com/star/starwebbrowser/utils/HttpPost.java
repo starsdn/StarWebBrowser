@@ -3,6 +3,7 @@ package com.star.starwebbrowser.utils;
 import com.star.starwebbrowser.event.MainHandler;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -21,7 +22,10 @@ public class HttpPost {
      */
     public void Post_json(String url,String json_data){
         MediaType mediaType = MediaType.parse("application/json;charset=utf-8");
-        OkHttpClient client = new OkHttpClient();
+        OkHttpClient client = new OkHttpClient.Builder()
+                .connectTimeout(20, TimeUnit.SECONDS)
+                .readTimeout(20, TimeUnit.SECONDS)
+                .build(); //设置20s超时
         Request request = new Request.Builder().url(url).post(RequestBody.create(mediaType,json_data)).build();
         Call call = client.newCall(request);
         call.enqueue(new Callback() {
