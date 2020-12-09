@@ -7,6 +7,7 @@ import com.star.starwebbrowser.R;
 import com.star.starwebbrowser.save.SPUtils;
 import com.star.starwebbrowser.utils.ImageDeal;
 import com.star.starwebbrowser.utils.ImageUtils;
+import com.star.starwebbrowser.utils.ToastEx;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -60,6 +61,7 @@ public class SnapShotActivity extends SuperActivity implements
     TextView title = null;
     TextView zoomTimes = null;
     String strClsbdh = "";
+    String hphm, hpzl;//号牌号码 号牌种类
     String queue_id = "0"; // 队列id
 
     int iCamera = 0;// 打开前置摄像头还是后置摄像头（0：后置，1：前置）
@@ -84,14 +86,18 @@ public class SnapShotActivity extends SuperActivity implements
             btnFlashSwitch = ((ImageButton) findViewById(R.id.FlashMode));
             btnFlashSwitch.setBackgroundResource(this.FlashModeIcon[this.curFlashMode]);
             btnFlashSwitch.setOnClickListener(this);
-            snapcancel = ((ImageButton) findViewById(R.id.snapcancel));
-            snapshot = ((ImageButton) findViewById(R.id.snapshot));
-            snapok = ((ImageButton) findViewById(R.id.snapok));
-            resnapshot = ((ImageButton) findViewById(R.id.resnapshot));
-            snapcancel.setBackgroundResource(R.mipmap.snapcancel);
-            snapshot.setBackgroundResource(R.mipmap.snapshot);
-            snapok.setBackgroundResource(R.mipmap.snapok);
-            resnapshot.setBackgroundResource(R.mipmap.resnapshot);
+            snapcancel = ((ImageButton) findViewById(R.id.snapcancel)); //取消
+            snapshot = ((ImageButton) findViewById(R.id.snapshot)); //拍照
+            snapok = ((ImageButton) findViewById(R.id.snapok));//发送
+            resnapshot = ((ImageButton) findViewById(R.id.resnapshot));//重拍
+            resnapshot.setEnabled(false);//重拍
+            snapok.setEnabled(false);//发送
+            snapcancel.setEnabled(false);//取消
+            // snapshot.setEnabled(false);//拍照
+            snapcancel.setBackgroundResource(R.mipmap.snapcancel_b); //取消
+            snapshot.setBackgroundResource(R.mipmap.snapshot); //拍照
+            snapok.setBackgroundResource(R.mipmap.snapok_b); //确定 发送
+            resnapshot.setBackgroundResource(R.mipmap.resnapshot_b); //重拍
             snapcancel.setOnClickListener(this);
             snapshot.setOnClickListener(this);
             snapok.setOnClickListener(this);
@@ -102,6 +108,8 @@ public class SnapShotActivity extends SuperActivity implements
             snapfield = localIntent.getStringExtra("field"); //照片种类
             fieldname = localIntent.getStringExtra("fieldname"); //照片显示名称
             strClsbdh = localIntent.getStringExtra("clsbdh"); //车辆识别代号
+            hphm = localIntent.getStringExtra("hphm");//号牌号码
+            hpzl = localIntent.getStringExtra("hpzl");//号牌种类
             //queue_id = localIntent.getStringExtra("queue_id");
             if (strClsbdh == null) {
                 strClsbdh = "";
@@ -122,51 +130,44 @@ public class SnapShotActivity extends SuperActivity implements
         try {
             if (v == resnapshot) // 重拍
             {
-                /*
-                 * File f=new
-                 * File(Environment.getExternalStorageDirectory().getAbsolutePath
-                 * ()+File.separator+"PixelFormat.JPEG"); f.delete();
-                 */
-                snapok.setEnabled(false);
                 photoView.setVisibility(View.GONE); // 隐藏展示的图片
                 mySurfaceView.setVisibility(View.VISIBLE);
                 if (isView) {
                     myCamera.stopPreview();
                 }
-                myCamera.startPreview();
+                myCamera.startPreview(); //重新打开摄像头 开始预览
+                resnapshot.setEnabled(false);//重拍
+                snapok.setEnabled(false);//发送
+                snapcancel.setEnabled(true);//取消
+                snapshot.setEnabled(true);//拍照
+                snapok.setBackgroundResource(R.mipmap.snapok_b);
+                snapshot.setBackgroundResource(R.mipmap.snapshot);
+                resnapshot.setBackgroundResource(R.mipmap.resnapshot_b);
+                snapcancel.setBackgroundResource(R.mipmap.snapcancel);
             }
             if (v == snapok) // 确定 保存照片
             {
+                resnapshot.setEnabled(true);//重拍
+                snapok.setEnabled(false);//发送
+                snapcancel.setEnabled(true);//取消
+                snapshot.setEnabled(false);//拍照
+                snapok.setBackgroundResource(R.mipmap.snapok_b);
+                snapshot.setBackgroundResource(R.mipmap.snapshot_b);
+                resnapshot.setBackgroundResource(R.mipmap.resnapshot);
+                snapcancel.setBackgroundResource(R.mipmap.snapcancel);
                 if ((snapfield != null) && (!snapfield.equals("")))
                     if (curBitMap != null) {
-
-                        //   if (!app.photoCollect.saveFile(curBitMap, strClsbdh, snapfield))
-                        //      new AlertDialog.Builder(this).setTitle("存储本地照片失败").setMessage("磁盘空间").setPositiveButton("确定", null).show();
-                        //app.currentSmallPhoto = ThumbnailUtils.extractThumbnail(curBitMap, 120, 90);
                         app.currentPhoto = curBitMap;
-                        // app.currentPhoto = ThumbnailUtils.extractThumbnail(curBitMap, 120, 90);;
-
-                        //得到base64字符串
-                        //  String strStrImg=  ImageUtils.getBase64Str(curBitMap);
                         Intent localIntent = new Intent();
-                        //  Bundle bundle = new Bundle();
-                        // bundle.putString("str_image",strStrImg);
-                        //  bundle.putParcelable("str_image",curBitMap);
-                        //localIntent.putExtra("str_image", strStrImg); //拍照图片
                         localIntent.putExtra("str_image", "1");
                         localIntent.putExtra("clsbdh", strClsbdh);
                         localIntent.putExtra("field", snapfield);
-                        // setResult(-1, localIntent);
-                        //  localIntent.putExtras(bundle);
                         this.setResult(RESULT_OK, localIntent);
-                        //  finish();
-
+                        ToastEx.ImageToast(this, R.mipmap.smile, "正在保存……", 1);
                         if (this.isView)
                             this.myCamera.stopPreview();
                         // ================================提交图片
                         try {
-                            // app.photoCollect.allState.put(snapfield, "0");
-                            // UpdatePhoto(snapfield);
                             finish();
                         } catch (Exception ex) {
                         }
@@ -186,33 +187,23 @@ public class SnapShotActivity extends SuperActivity implements
                         }
                     }
             }
-            if (v == snapshot) {
-
-                // ==============================单氐楠 2016年3月25日15:44:04
-                // =======开始=================
-                //Parameters localParameters = myCamera.getParameters();
-                //localParameters.setFlashMode(this.FlashMode[this.curFlashMode]);
-                //myCamera.setParameters(localParameters);
-                //myCamera.startPreview();
-                // ==============================单氐楠 2016年3月25日15:44:04
-                // =======结束=================
-
+            if (v == snapshot) { //拍照按钮
                 this.myCamera.autoFocus(this.mAutoFocusCallBack);
-                this.snapok.setEnabled(false);
+                resnapshot.setEnabled(true);//重拍
+                snapok.setEnabled(true);//发送
+                snapcancel.setEnabled(true);//取消
+                snapshot.setEnabled(false);//拍照
+                snapok.setBackgroundResource(R.mipmap.snapok);
+                snapshot.setBackgroundResource(R.mipmap.snapshot_b);
+                resnapshot.setBackgroundResource(R.mipmap.resnapshot);
+                snapcancel.setBackgroundResource(R.mipmap.snapcancel);
                 return;
             }
             if (v == snapcancel) {
                 if (this.isView)
                     this.myCamera.stopPreview();
-                //    app.currentSmallPhoto = null;
                 Intent localIntent = new Intent();
-
-                // bundle.putString("str_image",strStrImg);
-                //bundle.putParcelable("str_image",null);
-                //localIntent.putExtra("str_image", strStrImg); //拍照图片
                 localIntent.putExtra("str_image", "0");
-                // setResult(-1, localIntent);
-                //localIntent.putExtras(bundle);
                 this.setResult(RESULT_OK, localIntent);
                 finish();
             }
@@ -268,13 +259,13 @@ public class SnapShotActivity extends SuperActivity implements
         public void onPictureTaken(byte[] paramAnonymousArrayOfByte, Camera paramAnonymousCamera) {
             try {
                 Bitmap localBitmap1 = BitmapFactory.decodeByteArray(paramAnonymousArrayOfByte, 0, paramAnonymousArrayOfByte.length);
-                String str = strClsbdh;// 得到相应的检测项目
-                String strHPHM = SPUtils.readString(SnapShotActivity.this, "hphm");// 号牌号码
+                String str = "";// 得到相应的检测项目
+                // String strHPHM = SPUtils.readString(SnapShotActivity.this, "hphm");// 号牌号码
                 Object localObject;
                 if (!str.trim().equals("")) {
                     localObject = ImageDeal.AddTextToImage(localBitmap1, " " + str);
                 } else {
-                    localObject = ImageDeal.AddTextToImage(localBitmap1,strHPHM+" "+ SnapShotActivity.this.fieldname);
+                    localObject = ImageDeal.AddTextToImage(localBitmap1, hphm + " " + SnapShotActivity.this.fieldname);
                 }
                 curBitMap = ((Bitmap) localObject);
                 myCamera.stopPreview();
@@ -471,7 +462,7 @@ public class SnapShotActivity extends SuperActivity implements
                     if (localObject != null) {
                         localParameters.setPictureSize(iWidth, iHeight);// 设置照片
                     }
-                  //  localParameters.setPictureSize(iWidth, iHeight);// 设置照片
+                    //  localParameters.setPictureSize(iWidth, iHeight);// 设置照片
                     if (this.getResources().getConfiguration().orientation != Configuration.ORIENTATION_LANDSCAPE) {
                         // 如果是竖屏
                         localParameters.set("orientation", "portrait");
@@ -510,11 +501,13 @@ public class SnapShotActivity extends SuperActivity implements
                     .setPositiveButton("确定", null).show();
         }
     }
+
     @Override
-    public void surfaceChanged(SurfaceHolder holder, int format, int width,int height) {
+    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
         // TODO Auto-generated method stub
 
     }
+
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
         // TODO Auto-generated method stub
@@ -523,6 +516,7 @@ public class SnapShotActivity extends SuperActivity implements
         myCamera.release();
         myCamera = null;
     }
+
     @Override
     public boolean onKeyDown(int paramInt, KeyEvent paramKeyEvent) {
         if (paramInt == 4) {
@@ -530,6 +524,7 @@ public class SnapShotActivity extends SuperActivity implements
         }
         return super.onKeyDown(paramInt, paramKeyEvent);
     }
+
     /**
      * 模式 NONE：无 DRAG：拖拽. ZOOM:缩放
      *
@@ -539,10 +534,12 @@ public class SnapShotActivity extends SuperActivity implements
         NONE, DRAG, ZOOM
 
     }
+
     private int start_x, start_y, current_x, current_y;// 触摸位置
     // private float beforeLenght, afterLenght;// 两触点距离
     private float scale_temp;// 缩放比例
     private MODE mode = MODE.NONE;// 默认模式
+
     /***
      * touch 事件
      */
@@ -607,6 +604,7 @@ public class SnapShotActivity extends SuperActivity implements
         }
         beforeLenght = this.afterLenght;
     }
+
     /**
      * 按下
      **/

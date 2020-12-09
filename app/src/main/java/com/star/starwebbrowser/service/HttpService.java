@@ -1,5 +1,7 @@
 package com.star.starwebbrowser.service;
 
+import android.annotation.SuppressLint;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -43,6 +45,15 @@ public class HttpService extends NanoHTTPD {
                     JsonObject json_Data = json_params.getAsJsonObject("data"); //得到json数据
                     //String hphm = json_Data.get("hphm").toString();//得到号牌号码
                     MainHandler.SendMessage(MainHandler.MESSTYPE.CMD,json_Data.toString());
+                    break;
+                case "cmdend"://拍照结束
+                    MainHandler.SendMessage(MainHandler.MESSTYPE.CMDEND,"end");
+                    break;
+                case "rspprocsuccess": //服务端接收照片成功
+                    MainHandler.SendMessage(MainHandler.MESSTYPE.REV_SUCCESS,"success");
+                    break;
+                case "rspprocfail": //服务端接收到照片失败
+                    MainHandler.SendMessage(MainHandler.MESSTYPE.REV_FAIL,"fail");
                     break;
             }
 

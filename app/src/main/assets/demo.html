@@ -37,6 +37,9 @@
     <p>
         <input type="button" id="btnScanQR" value="打开摄像头" onclick="OpenCamear()" />
     <p>
+    <p>
+        <input type="button" id="btnScanQR" value="打开摄像头" onclick="configip()" />
+    <p>
         <input type="file" value="打开文件" />
     </p>
     <div>
@@ -45,9 +48,9 @@
 </body>
 <script>
 
-    function loadImg1(img){
+    function loadImg1(img) {
         alert(img);
-        document.getElementById("img").setAttribute("src",img);
+        document.getElementById("img").setAttribute("src", img);
     }
 
     function testDiv() {
@@ -83,9 +86,19 @@
         );
     }
 
+    function configip(){ 
+        window.WebViewJavascriptBridge.callHandler(
+            'configIp'
+            , { 'param': '中文测试' }
+            , function (responseData) {
+                document.getElementById("show").innerHTML = "send get responseData from java, data = " + responseData
+            }
+        );
+    }
+
     function ScanQR() {
         window.WebViewJavascriptBridge.callHandler(
-            'ScanQR', { 'param': '2222' },
+            'RecVideo', { 'param': '2222' },
             function (responseData) {
                 document.getElementById("show").innerHTML = "send " + responseData;
             }
@@ -153,7 +166,7 @@
                 responseCallback(responseData);
             }
         });
-        bridge.registerHandler("js_show_log",function(data,responseCallback){
+        bridge.registerHandler("js_show_log", function (data, responseCallback) {
             alert(data);
             document.getElementById("show").innerHTML = data;
             if (responseCallback) {
