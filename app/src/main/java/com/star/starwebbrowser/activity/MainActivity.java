@@ -6,6 +6,7 @@ import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -13,11 +14,13 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.support.v7.app.AlertDialog;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
 import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -38,8 +41,10 @@ import com.star.starwebbrowser.tcp.TcpCleint;
 import com.star.starwebbrowser.utils.HttpPost;
 import com.star.starwebbrowser.utils.ImageUtils;
 import com.star.starwebbrowser.utils.ProgressDialog;
+import com.star.starwebbrowser.utils.ToastEx;
 
 import java.io.IOException;
+import java.util.Objects;
 
 public class MainActivity extends SuperActivity implements OnClickListener {
 
@@ -62,6 +67,7 @@ public class MainActivity extends SuperActivity implements OnClickListener {
     String xsnr;//当前办理车辆的照片的显示类型
     String clsbdh;//当前办理车辆的车辆识别代号
     String jylsh;//当前办理车辆的检验流水号
+    String lx;//操作类型 0 照片 1 视频
     HttpService httpServer;//http服务
     Handler mainHandler; //主handle
 
@@ -69,6 +75,7 @@ public class MainActivity extends SuperActivity implements OnClickListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         setContentView(R.layout.activity_main);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON); // 设置屏幕常亮
         webView = (BridgeWebView) findViewById(R.id.webView);
@@ -82,11 +89,31 @@ public class MainActivity extends SuperActivity implements OnClickListener {
         webView.getSettings().setAllowUniversalAccessFromFileURLs(true);
         webView.getSettings().setAppCacheEnabled(true);
         webView.getSettings().setJavaScriptEnabled(true);
+        webView.getSettings().setUseWideViewPort(true);
+        webView.getSettings().setLoadWithOverviewMode(true);
+        webView.getSettings().setTextZoom(100);
         /* ** 配置浏览器缓存*/
         webView.setDefaultHandler(new DefaultHandler());
         webView.setWebChromeClient(new WebChromeClient() {
 
         });
+        int screenDensity = getResources().getDisplayMetrics().densityDpi;
+        WebSettings.ZoomDensity zoomDensity = WebSettings.ZoomDensity.MEDIUM;
+        switch (screenDensity) {
+            case DisplayMetrics.DENSITY_LOW:
+                zoomDensity = WebSettings.ZoomDensity.CLOSE;
+                break;
+            case DisplayMetrics.DENSITY_MEDIUM:
+                zoomDensity = WebSettings.ZoomDensity.MEDIUM;
+                break;
+            case DisplayMetrics.DENSITY_HIGH:
+            case DisplayMetrics.DENSITY_XHIGH:
+            case DisplayMetrics.DENSITY_XXHIGH:
+            default:
+                zoomDensity = WebSettings.ZoomDensity.FAR;
+                break;
+        }
+        webView.getSettings().setDefaultZoom(zoomDensity);
         // webView.loadUrl("file:///android_asset/start.html");
         webView.loadUrl("file:///android_asset/index_percent.html");
         // webView.loadUrl("http://122.193.27.194:2000/PDAInspection/AppH5/start.html");
@@ -95,7 +122,7 @@ public class MainActivity extends SuperActivity implements OnClickListener {
         //判断配置项是否配置
         strIp = SPUtils.readString(MainActivity.this, "ip");
         strPort = SPUtils.readString(MainActivity.this, "port");
-        if(strIp==null||"".equals(strIp) || strPort==null || "".equals(strPort)){
+        if (strIp == null || "".equals(strIp) || strPort == null || "".equals(strPort)) {
             ShowConfig();//显示配置狂
         }
 
@@ -137,17 +164,17 @@ public class MainActivity extends SuperActivity implements OnClickListener {
             @Override
             public void handler(String data, CallBackFunction function) {
                 // new Gson().fromJson(data,)
-               // Gson gsonCamera = new Gson();
-               // GetCameraJson jsonClass = gsonCamera.fromJson(data, GetCameraJson.class);
+                // Gson gsonCamera = new Gson();
+                // GetCameraJson jsonClass = gsonCamera.fromJson(data, GetCameraJson.class);
                 Intent CaptureIntent;
                 CaptureIntent = new Intent(MainActivity.this, SnapShotActivity.class);
                 CaptureIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-              //  code = jsonClass.code; //给全局拍照种类赋值，拍照结束时回调
+                //  code = jsonClass.code; //给全局拍照种类赋值，拍照结束时回调
                 CaptureIntent.putExtra("field", zpzl);//照片种类
                 CaptureIntent.putExtra("fieldname", xsnr); //显示内容
                 CaptureIntent.putExtra("clsbdh", clsbdh); // 车辆识别代号
-                CaptureIntent.putExtra("hphm",hphm); //号牌号码
-                CaptureIntent.putExtra("hpzl",hpzl); //号牌种类
+                CaptureIntent.putExtra("hphm", hphm); //号牌号码
+                CaptureIntent.putExtra("hpzl", hpzl); //号牌种类
                 startActivityForResult(CaptureIntent, 5);
                 function.onCallBack("Response_sdn_camera"); //响应JS请求
             }
@@ -191,9 +218,9 @@ public class MainActivity extends SuperActivity implements OnClickListener {
                 localIntent.putExtra("hpzl", hpzl);
                 //localIntent.putExtra("hpzl","02");
                 localIntent.putExtra("vectype", zpzl);
-                localIntent.putExtra("clsbdh",clsbdh);
-                localIntent.putExtra("jylsh",jylsh);
-                localIntent.putExtra("zpzl",zpzl);
+                localIntent.putExtra("clsbdh", clsbdh);
+                localIntent.putExtra("jylsh", jylsh);
+                localIntent.putExtra("zpzl", zpzl);
                 String sdnSerIp = SPUtils.readString(MainActivity.this, "serviceip");
                 String sdnSerPort = SPUtils.readString(MainActivity.this, "serviceport");
                 localIntent.putExtra("ip", sdnSerIp);
@@ -210,9 +237,33 @@ public class MainActivity extends SuperActivity implements OnClickListener {
             @Override
             public void handler(String data, CallBackFunction function) {
                 ShowConfig();
-                function.onCallBack(String.format("{\"ip\":\"%s\",\"port\":\"%s\"}",strIp,strPort)); //响应JS请求
+                function.onCallBack(String.format("{\"ip\":\"%s\",\"port\":\"%s\"}", strIp, strPort)); //响应JS请求
             }
         });
+        /**
+         * 清空缓存
+         */
+        webView.registerHandler("cleanUp", new BridgeHandler() {
+            @Override
+            public void handler(String data, CallBackFunction function) {
+                hphm = "";//当前办理车辆的号牌号码
+                SPUtils.saveString(MainActivity.this, "hphm", "");
+                hpzl = "";//当前办理车辆的号牌种类
+                SPUtils.saveString(MainActivity.this, "hpzl", "");
+                zpzl = "";//当前办理车辆的照片种类
+                SPUtils.saveString(MainActivity.this, "zpzl", "");
+                xsnr = "";//当前办理车辆的照片的显示类型
+                SPUtils.saveString(MainActivity.this, "xsnr", "");
+                clsbdh = "";//当前办理车辆的车辆识别代号
+                SPUtils.saveString(MainActivity.this, "clsbdh", "");
+                jylsh = "";//当前办理车辆的检验流水号
+                SPUtils.saveString(MainActivity.this, "jylsh", "");
+                lx = "";//操作类型 0 照片 1 视频
+                SPUtils.saveString(MainActivity.this, "lx", "");
+                function.onCallBack(String.format("{\"ip\":\"%s\",\"port\":\"%s\"}", strIp, strPort)); //响应JS请求
+            }
+        });
+
         //endregion
 
 
@@ -265,8 +316,22 @@ public class MainActivity extends SuperActivity implements OnClickListener {
         });
         //endregion
 
+        try {
+            hphm = SPUtils.readString(this, "hphm");//号牌号码
+            hpzl = SPUtils.readString(this, "hpzl");//号牌种类
+            clsbdh = SPUtils.readString(this, "clsbdh");//车辆识别代号
+            jylsh = SPUtils.readString(this, "jylsh");//检验流水号
+            zpzl = SPUtils.readString(this, "zpzl");//照片种类
+            String strlx = SPUtils.readString(this, "lx");//拍照类型 0 照片 1 视频
+            String strXSNR = SPUtils.readString(this, "xsnr");//显示内容
+            String strJson_init = "{\"type\":\"init\",\"data\":{\"hphm\":\"%s\",\"hpzl\":\"%s\",\"zpzl\":\"%s\",\"xsnr\":\"%s\",\"lx\":\"%s\",\"ip\":\"%s\",\"port\":\"%s\"}}";
+            strJson_init = String.format(strJson_init, hphm, hpzl, zpzl, strXSNR, strlx, strIp, strPort);
+            webView.send(strJson_init); //给前端初始化值
+        } catch (Exception ex) {
+            ToastEx.ImageToast(this, R.mipmap.login_error_icon, "初始化数据失败", 2);
+        }
         //此处用作给定前端初始值
-        webView.send("start");
+
         //启动http服务监听请求
 
         if (strPort == null || strPort.equals("")) {
@@ -282,6 +347,51 @@ public class MainActivity extends SuperActivity implements OnClickListener {
         this.mainHandler = new MyHandler(Looper.getMainLooper());
         MainHandler.Init(mainHandler);
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        int screenDensity = getResources().getDisplayMetrics().densityDpi;
+        WebSettings.ZoomDensity zoomDensity = WebSettings.ZoomDensity.MEDIUM;
+        switch (screenDensity) {
+            case DisplayMetrics.DENSITY_LOW:
+                zoomDensity = WebSettings.ZoomDensity.CLOSE;
+                break;
+            case DisplayMetrics.DENSITY_MEDIUM:
+                zoomDensity = WebSettings.ZoomDensity.MEDIUM;
+                break;
+            case DisplayMetrics.DENSITY_HIGH:
+            case DisplayMetrics.DENSITY_XHIGH:
+            case DisplayMetrics.DENSITY_XXHIGH:
+            default:
+                zoomDensity = WebSettings.ZoomDensity.FAR;
+                break;
+        }
+        webView.getSettings().setDefaultZoom(zoomDensity);
+
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        int screenDensity = getResources().getDisplayMetrics().densityDpi;
+        WebSettings.ZoomDensity zoomDensity = WebSettings.ZoomDensity.MEDIUM;
+        switch (screenDensity) {
+            case DisplayMetrics.DENSITY_LOW:
+                zoomDensity = WebSettings.ZoomDensity.CLOSE;
+                break;
+            case DisplayMetrics.DENSITY_MEDIUM:
+                zoomDensity = WebSettings.ZoomDensity.MEDIUM;
+                break;
+            case DisplayMetrics.DENSITY_HIGH:
+            case DisplayMetrics.DENSITY_XHIGH:
+            case DisplayMetrics.DENSITY_XXHIGH:
+            default:
+                zoomDensity = WebSettings.ZoomDensity.FAR;
+                break;
+        }
+        webView.getSettings().setDefaultZoom(zoomDensity);
     }
 
     //region 跳转activity返回结果处理
@@ -302,6 +412,8 @@ public class MainActivity extends SuperActivity implements OnClickListener {
                     boolean result = intent.getBooleanExtra("result", false);
                     if (result) {
                         //  SetUIState(UISTATE.usComplete); //完成
+                        String strJson = "{\"type\":\"video\",\"data\":\"%s\"}";
+                        syncPost(String.format(strJson, ""));
                     } else {
                         //  SetUIState(UISTATE.usRecode); //录像
                     }
@@ -336,8 +448,8 @@ public class MainActivity extends SuperActivity implements OnClickListener {
                     strStrImg = ImageUtils.getBase64Str(app.currentPhoto);
                     //调用post上传图片
                     String strJson = "{\"type\":\"photo\",\"data\":\"%s\"}";
-                    syncUploadImg(String.format(strJson, strStrImg));
-                }else { //取消拍照
+                    syncPost(String.format(strJson, strStrImg));
+                } else { //取消拍照
 
                 }
 
@@ -349,7 +461,7 @@ public class MainActivity extends SuperActivity implements OnClickListener {
 
     /* ************ 以下是 Socket通讯******************** */
 
-    //region  APP控制服务端是否录像
+    //region  APP控制服务端是否录像 废弃
 
     /**
      * 开始录像
@@ -429,7 +541,7 @@ public class MainActivity extends SuperActivity implements OnClickListener {
         }
 
     }
-    //endregion
+    //endregion 废弃
 
     /* *************以上是 Socket通讯******************* */
 
@@ -458,7 +570,7 @@ public class MainActivity extends SuperActivity implements OnClickListener {
     /**
      * 上传照片
      */
-    private void syncUploadImg(String strjson) {
+    private void syncPost(String strjson) {
         String strUrl = "http://%s:%s";
         strUrl = String.format(strUrl, SPUtils.readString(MainActivity.this, "ip"), SPUtils.readString(MainActivity.this, "port"));
         new HttpPost().Post_json(strUrl, strjson);
@@ -478,25 +590,42 @@ public class MainActivity extends SuperActivity implements OnClickListener {
                 case CMD: //得到指令开始处理照片
                     //编写拍照&处理照片的指令
                     JsonObject json_data = new JsonParser().parse(mainHandler.Info).getAsJsonObject();//得到对应的json字符串
-                    Log.i(TAG, "handleMessage: "+json_data.toString());
+                    Log.i(TAG, "handleMessage: " + json_data.toString());
                     //解析json {"type":"cmd","data":{"hphm":"","hpzl":"","zpzl":"","xsnr":"","lx":"0 照片 1视频"}}
-                    hphm = json_data.get("hphm").getAsString();//得到号牌号码
+                    if (json_data.has("hphm"))
+                        hphm = json_data.get("hphm").getAsString();//得到号牌号码
                     SPUtils.saveString(MainActivity.this, "hphm", hphm); //保存到本地
-                    hpzl = json_data.get("hpzl").getAsString();//得到号牌种类
+                    if (json_data.has("hpzl"))
+                        hpzl = json_data.get("hpzl").getAsString();//得到号牌种类
                     SPUtils.saveString(MainActivity.this, "hpzl", hpzl);
-                    zpzl = json_data.get("zpzl").getAsString();//照片种类
+                    if (json_data.has("zpzl"))
+                        zpzl = json_data.get("zpzl").getAsString();//照片种类
                     SPUtils.saveString(MainActivity.this, "zpzl", zpzl);
-                    clsbdh = json_data.get("clsbdh").getAsString();//得到车辆识别代号
-                    SPUtils.saveString(MainActivity.this,"clsbdh","");
-                    jylsh = json_data.get("jylsh").getAsString();//得到检验流水号
-                    SPUtils.saveString(MainActivity.this,"jylsh",jylsh);
-                    String strLX = json_data.get("lx").getAsString();//得到拍照类型
-                    String xsnr = json_data.get("xsnr").getAsString();//得到显示内容
+                    if (json_data.has("clsbdh"))
+                        clsbdh = json_data.get("clsbdh").getAsString();//得到车辆识别代号
+                    SPUtils.saveString(MainActivity.this, "clsbdh", clsbdh);
+                    if (json_data.has("jylsh"))
+                        jylsh = json_data.get("jylsh").getAsString();//得到检验流水号
+                    SPUtils.saveString(MainActivity.this, "jylsh", jylsh);
+                    if (json_data.has("lx")) {
+                        lx = json_data.get("lx").getAsString();//得到拍照类型
+                        SPUtils.saveString(MainActivity.this, "lx", lx);
+                    }
+                    if (json_data.has("xsnr")) {
+                        xsnr = json_data.get("xsnr").getAsString();//得到显示内容
+                        SPUtils.saveString(MainActivity.this, "xsnr", xsnr); //显示内容
+                    }
                     //<div class="logs_item">1.2020-12-9,完成设置操作</div>
-                    if(strLX.equals("0")){ //拍照类型为照片
+                    String json_btn = "{\"xsnr\":\"%s\",\"type\":\"%s\"}";
+                    if (lx.equals("0")) { //拍照类型为照片
                         htmlShow(String.format(strInfo, "收到拍照指令:" + xsnr, 1));
-                    }else {
+                        //  htmlTips( String.format(json_btn,"请拍照："+xsnr,lx));
+                        htmlTips(json_data.toString());
+                    } else {
                         htmlShow(String.format(strInfo, "收到录像指令:" + xsnr, 1));
+                        //  htmlTips("录像："+xsnr);
+                        //htmlTips( String.format(json_btn,"请录像："+xsnr,lx));
+                        htmlTips(json_data.toString());
                     }
                     //控制前台按钮事件
                     break;
@@ -505,29 +634,74 @@ public class MainActivity extends SuperActivity implements OnClickListener {
                     SPUtils.saveString(MainActivity.this, "hphm", ""); //保存到本地
                     SPUtils.saveString(MainActivity.this, "hpzl", "");
                     SPUtils.saveString(MainActivity.this, "zpzl", "");
-                    SPUtils.saveString(MainActivity.this,"clsbdh","");
-                    SPUtils.saveString(MainActivity.this,"jylsh","");
-                    htmlShow(String.format(strInfo, "已完成监测，等待下一辆车" , 1));
+                    SPUtils.saveString(MainActivity.this, "clsbdh", "");
+                    SPUtils.saveString(MainActivity.this, "jylsh", "");
+                    htmlShow(String.format(strInfo, "已完成检测，等待下一辆车", 1));
+                  //  htmlTips("{}");
+                    webView.callHandler("show_tip_only", "已完成检测，等待下一辆车", new CallBackFunction() {
+                        @Override
+                        public void onCallBack(String data) {
+                            //调用前台js函数的返回值
+                        }
+                    });
                     break;
                 case SEND_FAIL://发送失败
                     htmlShow(String.format(strInfo, "发送照片响应失败，请重新上传", 3));
                     //失败后控制拍照界面 再次拍照
                     break;
                 case SEND_SUCCESS:
-                    htmlShow(String.format(strInfo, "发送照片响应成功" , 0));
+                    htmlShow(String.format(strInfo, "发送照片响应成功", 0));
                     break;
                 case REV_FAIL://保存图片失败
                     htmlShow(String.format(strInfo, "发送照片保存失败，请重新上传", 3));
                     //失败后控制拍照界面 再次拍照
                     break;
                 case REV_SUCCESS: //保存图片成功
-                    htmlShow(String.format(strInfo, "发送照片保存成功" , 0));
+                    htmlShow(String.format(strInfo, "发送照片保存成功", 0));
+                    break;
+                case ERROE://异常
+                    htmlShow(String.format(strInfo, mainHandler.Info, 3));
                     break;
             }
         }
 
+        /**
+         * 运行日志显示
+         *
+         * @param strInfo
+         */
         private void htmlShow(String strInfo) {
             webView.callHandler("js_show_log", strInfo, new CallBackFunction() {
+                @Override
+                public void onCallBack(String data) {
+                    //调用前台js函数的返回值
+                }
+            });
+        }
+
+        /**
+         * 显示拍照种类
+         *
+         * @param strInfo
+         */
+        private void htmlTips(String strInfo) {
+            //js_show_tip
+            webView.callHandler("js_show_tip", strInfo, new CallBackFunction() {
+                @Override
+                public void onCallBack(String data) {
+                    //调用前台js函数的返回值
+                }
+            });
+        }
+
+        /**
+         * 接收到命令后 把CMD data发送到前台
+         *
+         * @param jsonData
+         */
+        private void htmlCMD(String jsonData) {
+            //js_show_tip
+            webView.callHandler("js_deal_cmd", jsonData, new CallBackFunction() {
                 @Override
                 public void onCallBack(String data) {
                     //调用前台js函数的返回值

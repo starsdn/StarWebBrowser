@@ -50,9 +50,10 @@ public class MainHandler {
      * SEND_SUCCESS 发送成功
      * REV_FAIL 接收失败
      * REV_SUCCESS 接收成功
+     * ERROR 错误
      */
     public static enum MESSTYPE{
-        CMD,CMDEND,SEND_FAIL,SEND_SUCCESS,REV_FAIL,REV_SUCCESS
+        CMD,CMDEND,SEND_FAIL,SEND_SUCCESS,REV_FAIL,REV_SUCCESS,ERROE
     }
 //    @IntDef({CMD, CMDEND, SEND_FAIL, SEND_SUCCESS, REV_FAIL, REV_SUCCESS})
 //    @Retention(RetentionPolicy.SOURCE)

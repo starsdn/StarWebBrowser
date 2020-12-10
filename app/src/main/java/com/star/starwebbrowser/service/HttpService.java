@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.star.starwebbrowser.activity.MainActivity;
 import com.star.starwebbrowser.event.MainHandler;
 
 import java.io.IOException;
@@ -30,39 +31,43 @@ public class HttpService extends NanoHTTPD {
 
     @Override
     public Response serve(IHTTPSession session) {
-       // return super.serve(session);
+        // return super.serve(session);
         String strUri = session.getUri(); //得到请求地址IP
         Method strMethod = session.getMethod();//得到请求方法类型  post put等
-        Map<String,String> body = new HashMap<>();
+        Map<String, String> body = new HashMap<>();
         try {
             session.parseBody(body);
             //从body里面解析传递过来的值
             String str_params = body.get("postData");//从post方法中获取对应的post参数
             JsonObject json_params = new JsonParser().parse(str_params).getAsJsonObject();//得到jsonObject
-            String strtype = json_params.get("type").getAsString();//得到type指令
-            switch (strtype){
-                case "cmd"://得到拍照命令
-                    JsonObject json_Data = json_params.getAsJsonObject("data"); //得到json数据
-                    //String hphm = json_Data.get("hphm").toString();//得到号牌号码
-                    MainHandler.SendMessage(MainHandler.MESSTYPE.CMD,json_Data.toString());
-                    break;
-                case "cmdend"://拍照结束
-                    MainHandler.SendMessage(MainHandler.MESSTYPE.CMDEND,"end");
-                    break;
-                case "rspprocsuccess": //服务端接收照片成功
-                    MainHandler.SendMessage(MainHandler.MESSTYPE.REV_SUCCESS,"success");
-                    break;
-                case "rspprocfail": //服务端接收到照片失败
-                    MainHandler.SendMessage(MainHandler.MESSTYPE.REV_FAIL,"fail");
-                    break;
+            if (json_params.has("type")) {
+                String strtype = json_params.get("type").getAsString();//得到type指令
+                switch (strtype) {
+                    case "cmd"://得到拍照命令
+                        JsonObject json_Data = json_params.getAsJsonObject("data"); //得到json数据
+                        //String hphm = json_Data.get("hphm").toString();//得到号牌号码
+                        MainHandler.SendMessage(MainHandler.MESSTYPE.CMD, json_Data.toString());
+                        break;
+                    case "cmdend"://拍照结束
+                        MainHandler.SendMessage(MainHandler.MESSTYPE.CMDEND, "end");
+                        break;
+                    case "rspprocsuccess": //服务端接收照片成功
+                        MainHandler.SendMessage(MainHandler.MESSTYPE.REV_SUCCESS, "success");
+                        break;
+                    case "rspprocfail": //服务端接收到照片失败
+                        MainHandler.SendMessage(MainHandler.MESSTYPE.REV_FAIL, "fail");
+                        break;
+                }
+            }else {
+                //服务端发送指令不符合规范
+                MainHandler.SendMessage(MainHandler.MESSTYPE.ERROE,"服务端发送指令不符合规范");
             }
 
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ResponseException e) {
             e.printStackTrace();
-        }
-        finally {
+        } finally {
             return newFixedLengthResponse("ok");
         }
     }
