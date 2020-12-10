@@ -636,9 +636,9 @@ public class MainActivity extends SuperActivity implements OnClickListener {
                     SPUtils.saveString(MainActivity.this, "zpzl", "");
                     SPUtils.saveString(MainActivity.this, "clsbdh", "");
                     SPUtils.saveString(MainActivity.this, "jylsh", "");
-                    htmlShow(String.format(strInfo, "已完成检测，等待下一辆车", 1));
+                    htmlShow(String.format(strInfo, "拍照完成，请点击完成检测", 1));
                   //  htmlTips("{}");
-                    webView.callHandler("show_tip_only", "已完成检测，等待下一辆车", new CallBackFunction() {
+                    webView.callHandler("show_tip_only", "拍照完成，请点击完成检测", new CallBackFunction() {
                         @Override
                         public void onCallBack(String data) {
                             //调用前台js函数的返回值
