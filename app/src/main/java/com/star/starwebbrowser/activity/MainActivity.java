@@ -592,7 +592,7 @@ public class MainActivity extends SuperActivity implements OnClickListener {
             //super.handleMessage(msg);
             MainHandler mainHandler = (MainHandler) msg.obj;
             String strInfo = "{\"content\":\"%s\",\"type\":\"%s\"}"; //0 一般 黑色字体，1 凸显 绿色字体，2 警告 黄色字体，3 错误 红色字体
-            if(ip==null||ip.equals("")){ //如果IP为空，则让先配置IP
+            if(strIp==null||strIp.equals("")){ //如果IP为空，则让先配置IP
                 ShowConfig();//弹出IP配置界面
                 return; //阻止继续进行
             }
