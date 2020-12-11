@@ -69,6 +69,7 @@ public class SnapShotActivity extends SuperActivity implements
     @Override
     public void onCreate(Bundle paramBundle) {
         super.onCreate(paramBundle);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE); //强制横屏
         setContentView(R.layout.activity_snap_shot);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE); // 强制性横屏
         InitControl();
@@ -86,15 +87,15 @@ public class SnapShotActivity extends SuperActivity implements
             btnFlashSwitch = ((ImageButton) findViewById(R.id.FlashMode));
             btnFlashSwitch.setBackgroundResource(this.FlashModeIcon[this.curFlashMode]);
             btnFlashSwitch.setOnClickListener(this);
-            snapcancel = ((ImageButton) findViewById(R.id.snapcancel)); //取消
+            snapcancel = ((ImageButton) findViewById(R.id.snapcancel)); //取消camTitle
             snapshot = ((ImageButton) findViewById(R.id.snapshot)); //拍照
             snapok = ((ImageButton) findViewById(R.id.snapok));//发送
             resnapshot = ((ImageButton) findViewById(R.id.resnapshot));//重拍
             resnapshot.setEnabled(false);//重拍
             snapok.setEnabled(false);//发送
-            snapcancel.setEnabled(false);//取消
+            snapcancel.setEnabled(true);//取消
             // snapshot.setEnabled(false);//拍照
-            snapcancel.setBackgroundResource(R.mipmap.snapcancel_b); //取消
+            snapcancel.setBackgroundResource(R.mipmap.snapcancel); //取消
             snapshot.setBackgroundResource(R.mipmap.snapshot); //拍照
             snapok.setBackgroundResource(R.mipmap.snapok_b); //确定 发送
             resnapshot.setBackgroundResource(R.mipmap.resnapshot_b); //重拍
@@ -443,8 +444,7 @@ public class SnapShotActivity extends SuperActivity implements
                 if (this.isView) {
                     this.myCamera.stopPreview();
                 }
-                Camera.Parameters localParameters = this.myCamera
-                        .getParameters(); // 得到摄像机的设置参数
+                Camera.Parameters localParameters = this.myCamera.getParameters(); // 得到摄像机的设置参数
                 localParameters.setPictureFormat(PixelFormat.JPEG); // 设置图片格式
                 List<Size> localList = localParameters.getSupportedPictureSizes(); // 获取受支持的图片大小
                 Object localObject = null;

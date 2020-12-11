@@ -123,7 +123,7 @@ public class MainActivity extends SuperActivity implements OnClickListener {
         strIp = SPUtils.readString(MainActivity.this, "ip");
         strPort = SPUtils.readString(MainActivity.this, "port");
         if (strIp == null || "".equals(strIp) || strPort == null || "".equals(strPort)) {
-            ShowConfig();//显示配置狂
+           // ShowConfig();//显示配置狂 初始化完成后会加载配置框
         }
 
         //region webView 与JS 相互调用
@@ -322,10 +322,10 @@ public class MainActivity extends SuperActivity implements OnClickListener {
             clsbdh = SPUtils.readString(this, "clsbdh");//车辆识别代号
             jylsh = SPUtils.readString(this, "jylsh");//检验流水号
             zpzl = SPUtils.readString(this, "zpzl");//照片种类
-            String strlx = SPUtils.readString(this, "lx");//拍照类型 0 照片 1 视频
-            String strXSNR = SPUtils.readString(this, "xsnr");//显示内容
+            lx = SPUtils.readString(this, "lx");//拍照类型 0 照片 1 视频
+            xsnr = SPUtils.readString(this, "xsnr");//显示内容
             String strJson_init = "{\"type\":\"init\",\"data\":{\"hphm\":\"%s\",\"hpzl\":\"%s\",\"zpzl\":\"%s\",\"xsnr\":\"%s\",\"lx\":\"%s\",\"ip\":\"%s\",\"port\":\"%s\"}}";
-            strJson_init = String.format(strJson_init, hphm, hpzl, zpzl, strXSNR, strlx, strIp, strPort);
+            strJson_init = String.format(strJson_init, hphm, hpzl, zpzl, xsnr, lx, strIp, strPort);
             webView.send(strJson_init); //给前端初始化值
         } catch (Exception ex) {
             ToastEx.ImageToast(this, R.mipmap.login_error_icon, "初始化数据失败", 2);
@@ -416,6 +416,9 @@ public class MainActivity extends SuperActivity implements OnClickListener {
                         syncPost(String.format(strJson, ""));
                     } else {
                         //  SetUIState(UISTATE.usRecode); //录像
+                        String strInfo = "{\"content\":\"%s\",\"type\":\"%s\"}"; //0 一般 黑色字体，1 凸显 绿色字体，2 警告 黄色字体，3 错误 红色字体
+                        htmlShow(String.format(strInfo, "取消录像："+xsnr, 2));
+                        webView.loadUrl("javascript:$(\"#recvideo\").addClass(\"active\"); ");
                     }
                 }
                 break;
@@ -450,7 +453,9 @@ public class MainActivity extends SuperActivity implements OnClickListener {
                     String strJson = "{\"type\":\"photo\",\"data\":\"%s\"}";
                     syncPost(String.format(strJson, strStrImg));
                 } else { //取消拍照
-
+                    String strInfo = "{\"content\":\"%s\",\"type\":\"%s\"}"; //0 一般 黑色字体，1 凸显 绿色字体，2 警告 黄色字体，3 错误 红色字体
+                    htmlShow(String.format(strInfo, "取消拍摄："+xsnr, 2));
+                    webView.loadUrl("javascript:$(\"#camera\").addClass(\"active\"); ");
                 }
 
                 break;
@@ -482,7 +487,8 @@ public class MainActivity extends SuperActivity implements OnClickListener {
             */
             String strParm = String.format("<?xml version=\"1.0\" encoding=\"GB2312\"?><diagram type=\"start\" hphm=\"%s\" hpzl=\"%s\" jcxxh=\"%s\" clsbdh=\"%s\" queueid=\"%s\" cllx=\"%s\" ywlx=\"%s\" />",
                     arrayOfObject);
-            localTcpCommandTask.execute(new String[]{strParm});
+            localTcpCommandTask.execute(
+                    new String[]{strParm});
         }
     }
 
@@ -586,6 +592,10 @@ public class MainActivity extends SuperActivity implements OnClickListener {
             //super.handleMessage(msg);
             MainHandler mainHandler = (MainHandler) msg.obj;
             String strInfo = "{\"content\":\"%s\",\"type\":\"%s\"}"; //0 一般 黑色字体，1 凸显 绿色字体，2 警告 黄色字体，3 错误 红色字体
+            if(ip==null||ip.equals("")){ //如果IP为空，则让先配置IP
+                ShowConfig();//弹出IP配置界面
+                return; //阻止继续进行
+            }
             switch (mainHandler.msgType) {
                 case CMD: //得到指令开始处理照片
                     //编写拍照&处理照片的指令
@@ -637,7 +647,7 @@ public class MainActivity extends SuperActivity implements OnClickListener {
                     SPUtils.saveString(MainActivity.this, "clsbdh", "");
                     SPUtils.saveString(MainActivity.this, "jylsh", "");
                     htmlShow(String.format(strInfo, "拍照完成，请点击完成检测", 1));
-                  //  htmlTips("{}");
+                    //  htmlTips("{}");
                     webView.callHandler("show_tip_only", "拍照完成，请点击完成检测", new CallBackFunction() {
                         @Override
                         public void onCallBack(String data) {
@@ -665,49 +675,50 @@ public class MainActivity extends SuperActivity implements OnClickListener {
             }
         }
 
-        /**
-         * 运行日志显示
-         *
-         * @param strInfo
-         */
-        private void htmlShow(String strInfo) {
-            webView.callHandler("js_show_log", strInfo, new CallBackFunction() {
-                @Override
-                public void onCallBack(String data) {
-                    //调用前台js函数的返回值
-                }
-            });
-        }
+    }
 
-        /**
-         * 显示拍照种类
-         *
-         * @param strInfo
-         */
-        private void htmlTips(String strInfo) {
-            //js_show_tip
-            webView.callHandler("js_show_tip", strInfo, new CallBackFunction() {
-                @Override
-                public void onCallBack(String data) {
-                    //调用前台js函数的返回值
-                }
-            });
-        }
+    /**
+     * 运行日志显示
+     *
+     * @param strInfo
+     */
+    private void htmlShow(String strInfo) {
+        webView.callHandler("js_show_log", strInfo, new CallBackFunction() {
+            @Override
+            public void onCallBack(String data) {
+                //调用前台js函数的返回值
+            }
+        });
+    }
 
-        /**
-         * 接收到命令后 把CMD data发送到前台
-         *
-         * @param jsonData
-         */
-        private void htmlCMD(String jsonData) {
-            //js_show_tip
-            webView.callHandler("js_deal_cmd", jsonData, new CallBackFunction() {
-                @Override
-                public void onCallBack(String data) {
-                    //调用前台js函数的返回值
-                }
-            });
-        }
+    /**
+     * 显示拍照种类
+     *
+     * @param strInfo
+     */
+    private void htmlTips(String strInfo) {
+        //js_show_tip
+        webView.callHandler("js_show_tip", strInfo, new CallBackFunction() {
+            @Override
+            public void onCallBack(String data) {
+                //调用前台js函数的返回值
+            }
+        });
+    }
+
+    /**
+     * 接收到命令后 把CMD data发送到前台
+     *
+     * @param jsonData
+     */
+    private void htmlCMD(String jsonData) {
+        //js_show_tip
+        webView.callHandler("js_deal_cmd", jsonData, new CallBackFunction() {
+            @Override
+            public void onCallBack(String data) {
+                //调用前台js函数的返回值
+            }
+        });
     }
 
     private void ShowConfig() {
@@ -730,9 +741,13 @@ public class MainActivity extends SuperActivity implements OnClickListener {
                         String strServiceIP = serviceIP.getText().toString();
                         String strServicePort = servicePort.getText().toString();
                         SPUtils.saveString(MainActivity.this, "ip", str1);
+                        ip=ip;
                         SPUtils.saveString(MainActivity.this, "port", str2.trim());
+                        port=port;
                         SPUtils.saveString(MainActivity.this, "serviceip", strServiceIP);
+                        serviceIP=serviceIP;
                         SPUtils.saveString(MainActivity.this, "serviceport", strServicePort);
+                        servicePort=servicePort;
                     }
                 }).setNegativeButton("取消", null).show();
     }

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">车辆查验</string>
+    <string name="app_name">外观检验</string>
 
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
