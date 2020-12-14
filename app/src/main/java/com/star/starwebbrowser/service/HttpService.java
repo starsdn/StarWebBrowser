@@ -44,9 +44,10 @@ public class HttpService extends NanoHTTPD {
                 String strtype = json_params.get("type").getAsString();//得到type指令
                 switch (strtype) {
                     case "cmd"://得到拍照命令
-                        JsonObject json_Data = json_params.getAsJsonObject("data"); //得到json数据
+                        //JsonObject json_Data = json_params.getAsJsonObject("data"); //得到json数据
                         //String hphm = json_Data.get("hphm").toString();//得到号牌号码
-                        MainHandler.SendMessage(MainHandler.MESSTYPE.CMD, json_Data.toString());
+                        //MainHandler.SendMessage(MainHandler.MESSTYPE.CMD, json_Data.toString());
+                        MainHandler.SendMessage(MainHandler.MESSTYPE.CMD, str_params);
                         break;
                     case "cmdend"://拍照结束
                         MainHandler.SendMessage(MainHandler.MESSTYPE.CMDEND, "end");
