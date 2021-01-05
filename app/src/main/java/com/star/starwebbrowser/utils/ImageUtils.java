@@ -1,6 +1,7 @@
 package com.star.starwebbrowser.utils;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -63,8 +64,31 @@ public class ImageUtils {
      * @return base64字符串
      */
     public static String getBase64Str(Bitmap bm){
-        byte[] data = bitmap2Bytes(bm);
-        return Base64.encodeToString(data, Base64.NO_WRAP);
+//        byte[] data = bitmap2Bytes(bm);
+//        return Base64.encodeToString(data, Base64.NO_WRAP);
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        //参数2：压缩率，40表示压缩掉60%; 如果不压缩是100，表示压缩率为0
+        bm.compress(Bitmap.CompressFormat.JPEG, 80, bos);
+        byte[] bytes = bos.toByteArray();
+        return Base64.encodeToString(bytes, Base64.DEFAULT);
+    }
+
+    public static String getDiskBitmap2Base64(String pathString){
+        Bitmap bitmap = null;
+        try {
+            File file = new File(pathString);
+            if (file.exists()) {
+                bitmap = BitmapFactory.decodeFile(pathString);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        //参数2：压缩率，40表示压缩掉60%; 如果不压缩是100，表示压缩率为0
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos);
+        byte[] bytes = bos.toByteArray();
+        return Base64.encodeToString(bytes, Base64.DEFAULT);
     }
 
     /**

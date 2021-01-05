@@ -599,8 +599,9 @@ public class MainActivity extends SuperActivity implements OnClickListener {
             switch (mainHandler.msgType) {
                 case CMD: //得到指令开始处理照片
                     //编写拍照&处理照片的指令
-                    JsonObject json_data = new JsonParser().parse(mainHandler.Info).getAsJsonObject();//得到对应的json字符串
-                    Log.i(TAG, "handleMessage: " + json_data.toString());
+                    JsonObject json_params = new JsonParser().parse(mainHandler.Info).getAsJsonObject();//得到对应的json字符串
+                    JsonObject json_data = json_params.getAsJsonObject("data"); //得到json数据
+                   // Log.i(TAG, "handleMessage: " + json_data.toString());
                     //解析json {"type":"cmd","data":{"hphm":"","hpzl":"","zpzl":"","xsnr":"","lx":"0 照片 1视频"}}
                     if (json_data.has("hphm"))
                         hphm = json_data.get("hphm").getAsString();//得到号牌号码

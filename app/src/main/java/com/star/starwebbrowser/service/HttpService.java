@@ -1,18 +1,20 @@
 package com.star.starwebbrowser.service;
 
-import android.annotation.SuppressLint;
-
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.star.starwebbrowser.activity.MainActivity;
 import com.star.starwebbrowser.event.MainHandler;
+
+import org.nanohttpd.protocols.http.IHTTPSession;
+import org.nanohttpd.protocols.http.NanoHTTPD;
+import org.nanohttpd.protocols.http.request.Method;
+import org.nanohttpd.protocols.http.response.IStatus;
+import org.nanohttpd.protocols.http.response.Response;
+
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import fi.iki.elonen.NanoHTTPD;
 
 public class HttpService extends NanoHTTPD {
 
@@ -44,9 +46,10 @@ public class HttpService extends NanoHTTPD {
                 String strtype = json_params.get("type").getAsString();//得到type指令
                 switch (strtype) {
                     case "cmd"://得到拍照命令
-                        JsonObject json_Data = json_params.getAsJsonObject("data"); //得到json数据
+                        //JsonObject json_Data = json_params.getAsJsonObject("data"); //得到json数据
                         //String hphm = json_Data.get("hphm").toString();//得到号牌号码
-                        MainHandler.SendMessage(MainHandler.MESSTYPE.CMD, json_Data.toString());
+                        //MainHandler.SendMessage(MainHandler.MESSTYPE.CMD, json_Data.toString());
+                        MainHandler.SendMessage(MainHandler.MESSTYPE.CMD, str_params);
                         break;
                     case "cmdend"://拍照结束
                         MainHandler.SendMessage(MainHandler.MESSTYPE.CMDEND, "end");
@@ -68,7 +71,8 @@ public class HttpService extends NanoHTTPD {
         } catch (ResponseException e) {
             e.printStackTrace();
         } finally {
-            return newFixedLengthResponse("ok");
+           // return newFixedLengthResponse("ok");
+           return Response.newFixedLengthResponse("ok");
         }
     }
 
@@ -78,9 +82,9 @@ public class HttpService extends NanoHTTPD {
      * @param status
      * @return
      */
-    private Response addHeaderResponse(Response.IStatus status) {
+    private Response addHeaderResponse(IStatus status) {
         Response response = null;
-        response = newFixedLengthResponse(status, "application/json;charset=utf-8", "msg");
+        response = Response.newFixedLengthResponse(status, "application/json;charset=utf-8", "msg");
         response.addHeader("Access-Control-Allow-Headers", "X-PINGOTHER, Content-Type");
         response.addHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, HEAD");
         response.addHeader("Access-Control-Allow-Credentials", "true");
