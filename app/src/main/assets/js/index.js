@@ -310,7 +310,7 @@ function htmlShowLogs(data) {
         logs_div = "<div class='logs_item waring'>" + json_data["content"] + "</div>";
     } else {
         logs_div = "<div class='logs_item error'>" + json_data["content"] + "</div>";
-         $("#recvideo").removeClass("active"); //录像不可用
+          $("#camera").addClass("active"); //拍照可用
     }
     $("#logs").append(logs_div);
 }
