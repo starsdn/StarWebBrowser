@@ -299,17 +299,18 @@ function htmlShowLogs(data) {
         //如果日志行数大于8 则删除第一条
         $("#logs").children().first().remove();
     }
-    var logs_div = "<div class='logs_item'>" + json_data["content"] + "</div>"
+    var logs_div = "<div class='logs_item'>" + json_data["content"] + "</div>";
     if (json_data.type == "0") //黑色
     {
-        logs_div = "<div class='logs_item'>" + json_data["content"] + "</div>"
+        logs_div = "<div class='logs_item'>" + json_data["content"] + "</div>";
     } else if (json_data.type == "1") {//绿色
-        logs_div = "<div class='logs_item success'>" + json_data["content"] + "</div>"
+        logs_div = "<div class='logs_item success'>" + json_data["content"] + "</div>";
     } else if (json_data.type == "2") //黄色
     {
-        logs_div = "<div class='logs_item waring'>" + json_data["content"] + "</div>"
+        logs_div = "<div class='logs_item waring'>" + json_data["content"] + "</div>";
     } else {
-        logs_div = "<div class='logs_item error'>" + json_data["content"] + "</div>"
+        logs_div = "<div class='logs_item error'>" + json_data["content"] + "</div>";
+         $("#recvideo").removeClass("active"); //录像不可用
     }
     $("#logs").append(logs_div);
 }
