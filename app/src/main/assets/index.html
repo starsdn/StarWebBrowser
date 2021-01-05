@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>车辆检测</title>
+    <link rel="stylesheet" href="./css/index.css">
+    <script src="./js/rem.js"></script>
+</head>
+<body onload="screenOrientationEvent()">
+    <div class="main_container">
+        <div class="left_btns">
+            <div class="item_btn active">
+                <div class="img_logo setting"></div>
+                <div class="btn_title">设置</div>
+            </div>
+            <div class="item_btn">
+                <div class="img_logo online"></div>
+                <div class="btn_title">离线</div>
+            </div>
+            <div class="item_btn">
+                <div class="btn_title car_num">车牌号</div>
+            </div>
+            <div class="item_btn active">
+                <div class="img_logo stop"></div>
+                <div class="btn_title">终止检测</div>
+            </div>
+            <div class="item_btn">
+                <div class="img_logo finish"></div>
+                <div class="btn_title">完成检测</div>
+            </div>
+        </div>
+        <div class="center_content">
+            <div class="empty_box"></div>
+        </div>
+        <div class="right_btns">
+            <div class="top_btn_item">
+                <div class="item_btn active">
+                    <div class="img_logo photo"></div>
+                    <div class="btn_title">拍照</div>
+                </div>
+                <div class="item_btn active">
+                    <div class="img_logo post"></div>
+                    <div class="btn_title">发送</div>
+                </div>
+                <div class="item_btn active">
+                    <div class="img_logo replay"></div>
+                    <div class="btn_title">重拍</div>
+                </div>
+            </div>
+            <div class="bottom_btn_item">
+                <div class="item_btn active">
+                    <div class="img_logo video"></div>
+                    <div class="btn_title">录像</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="change" style="display:none"></div>
+    <script src="./js/jquery.min.js"></script>
+    <script>
+        var orientation=0;
+        function screenOrientationEvent(){
+            if(orientation == 0) {
+                document.getElementById("change").innerText="竖";
+                $("body").css({
+                    'transform':'rotate(90deg)',
+                    '-webkit-transform':'rotate(90deg)',
+                    '-moz-transform':'rotate(90deg)'
+                });
+            } else {
+                document.getElementById("change").innerText="横";
+                $("body").css({
+                    'transform':'rotate(0deg)',
+                    '-webkit-transform':'rotate(0deg)',
+                    '-moz-transform':'rotate(0deg)'
+                });
+            }
+        }
+        var innerWidthTmp = window.innerWidth;
+        //横竖屏事件监听方法
+        function screenOrientationListener(){
+            // console.log(1)
+            try{
+                var iw = window.innerWidth;
+                //屏幕方向改变处理
+                if(iw != innerWidthTmp){
+                    if(iw>window.innerHeight){
+                        orientation = 90;
+                    } else {
+                        orientation = 0;
+                    }
+                    //调用转屏事件
+                    screenOrientationEvent();
+                    innerWidthTmp = iw;
+                }
+            } catch(e){ alert(e);};
+        //间隔固定事件检查是否转屏，默认500毫秒
+            setTimeout("screenOrientationListener()",500);
+        }
+        //启动横竖屏事件监听
+        screenOrientationListener();
+        $(function() {
+            $('.item_btn').addClass('active')
+            // $('.item_btn').removeClass('active')
+        })
+    </script>
+</body>
+</html>

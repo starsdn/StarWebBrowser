@@ -1,0 +1,150 @@
+html,body {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+.main_container {
+    height: 100%;
+    width: 100%;
+    display: flex;
+}
+.left_btns,.right_btns {
+    height: 100%;
+    width: 2rem;
+    background: #08012E;
+    padding: 0.2rem 0.2rem;
+    box-sizing: border-box;
+}
+.center_content {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.center_content .empty_box {
+    margin: 0 auto;
+    width: 6rem;
+    height: 3.8rem;
+    background: url('../images/blank.png') no-repeat center center;
+    background-size: 100% 100%;
+    box-sizing: border-box;
+
+}
+.left_btns .item_btn {
+    width: 1.56rem;
+    height: 1.36rem;
+    margin: 0.08rem auto 0;
+    border: 2px solid #24366D;
+    border-radius: 4px;
+    padding: 0.12rem 0rem;
+    box-sizing: border-box;
+    font-size: 0.20rem;
+    font-weight: 500;
+}
+.left_btns .item_btn:first-child {
+    margin-top: 0px;
+}
+.item_btn .img_logo {
+    height: 0.76rem;
+    width: 0.76rem;
+    margin: 0 auto;  
+}
+.item_btn .setting {
+    background: url('../images/setting.png') no-repeat center center;
+    background-size: 100% 100%;
+}
+.item_btn.active .setting {
+    background: url('../images/setting_active.png') no-repeat center center;
+    background-size: 100% 100%;
+}
+.item_btn .online {
+    background: url('../images/online.png') no-repeat center center;
+    background-size: 100% 100%;
+}
+.item_btn.active .online {
+    background: url('../images/online_active.png') no-repeat center center;
+    background-size: 100% 100%;
+}
+.item_btn .finish {
+    background: url('../images/finish.png') no-repeat center center;
+    background-size: 100% 100%;
+}
+.item_btn.active .finish {
+    background: url('../images/finish_active.png') no-repeat center center;
+    background-size: 100% 100%;
+}
+.item_btn .stop {
+    background: url('../images/stop.png') no-repeat center center;
+    background-size: 100% 100%;
+}
+.item_btn.active .stop {
+    background: url('../images/stop_active.png') no-repeat center center;
+    background-size: 100% 100%;
+}
+.item_btn .video {
+    background: url('../images/video.png') no-repeat center center;
+    background-size: 100% 100%;
+}
+.item_btn.active .video {
+    background: url('../images/video_active.png') no-repeat center center;
+    background-size: 100% 100%;
+}
+.item_btn .photo {
+    background: url('../images/photo.png') no-repeat center center;
+    background-size: 100% 100%;
+}
+.item_btn.active .photo {
+    background: url('../images/photo_active.png') no-repeat center center;
+    background-size: 100% 100%;
+}
+.item_btn .replay {
+    background: url('../images/replay.png') no-repeat center center;
+    background-size: 100% 100%;
+}
+.item_btn.active .replay {
+    background: url('../images/replay_active.png') no-repeat center center;
+    background-size: 100% 100%;
+}
+.item_btn .post {
+    background: url('../images/post.png') no-repeat center center;
+    background-size: 100% 100%;
+}
+.item_btn.active .post {
+    background: url('../images/post_active.png') no-repeat center center;
+    background-size: 100% 100%;
+}
+.item_btn .btn_title {
+    text-align: center;
+    margin-top: 2px;
+    color: #A5AAB3;
+}
+.item_btn.active .btn_title {
+    color: #228FFC;
+}
+.btn_title.car_num {
+    line-height: 1rem;
+}
+.right_btns .top_btn_item {
+    width: 1.56rem;
+    height: 4.38rem;
+    border: 2px solid #24366D;
+    padding: 0.18rem 0.4rem;
+    box-sizing: border-box;
+    margin-bottom: 0.23rem;
+    font-size: 0.2rem;
+}
+.right_btns .bottom_btn_item {
+    width: 1.56rem;
+    height: 2.47rem;
+    border: 2px solid #24366D;
+    padding: 0.7rem 0.4rem;
+    box-sizing: border-box;
+    font-size: 0.2rem;
+}
+.top_btn_item .item_btn {
+    margin-top: 0.3rem;
+}
+.top_btn_item .item_btn:first-child {
+    margin-top: 0rem;
+}

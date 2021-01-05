@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <!-- 下面两句代码是做手机适配用的 ， 加上之后手机网页就会自动适配-->
+    <meta name="viewport" content="width=device-width">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>车辆检测</title>
+    <link rel="stylesheet" href="./css/index_percent.css">
+    <script src="./js/rem.js"></script>
+</head>
+
+<body onload="screenOrientationEvent()">
+    <div id="app" class="main_container">
+        <div class="left_btns">
+            <div class="item">
+                <div class="border_sty">
+                    <div class="item_btn active" onclick="configIp(this)">
+                        <div class="img_logo setting"></div>
+                        <div class="btn_title">设置</div>
+                    </div>
+                </div>
+            </div>
+            <div class="item">
+                <div class="border_sty">
+                    <div class="item_btn " id="line_status" onclick="reConn(this)">
+                        <div class="img_logo online"></div>
+                        <div class="btn_title">离线</div>
+                    </div>
+                </div>
+            </div>
+            <div class="item">
+                <div class="border_sty">
+                    <div class="item_btn">
+                        <div class="btn_title car_num" id="hphm">车牌号</div>
+                    </div>
+                </div>
+            </div>
+            <div class="item">
+                <div class="border_sty">
+                    <div class="item_btn" id="tml_stop" onclick="tmlStop(this)">
+                        <div class="img_logo stop"></div>
+                        <div class="btn_title">终止检测</div>
+                    </div>
+                </div>
+            </div>
+            <div class="item">
+                <div class="border_sty">
+                    <div class="item_btn" id="end_stop" onclick="endStop(this)">
+                        <div class="img_logo finish"></div>
+                        <div class="btn_title">完成检测</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="center_content">
+            <div class="tips" id="tips"></div>
+            <div class="logs" id="logs">
+                <!-- <div class="logs_item">1.2020-12-9,完成设置操作</div>
+                <div class="logs_item">2.2020-12-9,完成登录操作</div>
+                <div class="logs_item error">3.2020-12-9,拍照发送失败</div>
+                <div class="logs_item">4.2020-12-9,第二次拍照发送成功</div>
+                <div class="logs_item">5.2020-12-9,网络连接成功，第二次拍照发送成功</div>
+                <div class="logs_item">6.2020-12-9,网络连接成功，第二次拍照发送成功</div>
+                <div class="logs_item">7.2020-12-9,网络连接成功，第二次拍照发送成功</div>
+                <div class="logs_item success">8.2020-12-9,网络连接成功，第二次拍照发送成功10.2020-12-9,网络连接成功，第二次拍照发送成功10.2020-12-9,网络连接成功，第二次拍照发送成功</div>
+                <div class="logs_item">9.2020-12-9,网络连接成功，第二次拍照发送成功</div>
+                <div class="logs_item">10.2020-12-9,网络连接成功，第二次拍照发送成功</div> -->
+            </div>
+        </div>
+        <div class="right_btns">
+            <div class="item">
+                <div class="border_sty">
+                    <div class="top_btn_item">
+                        <div class="item_btn" id="camera" onclick="OpenCamear(this)">
+                            <div class="img_logo photo"></div>
+                            <div class="btn_title">拍照</div>
+                        </div>
+                        <div class="item_btn" style="display: none;">
+                            <div class="img_logo post"></div>
+                            <div class="btn_title">发送</div>
+                        </div>
+                        <div class="item_btn" style="display: none;">
+                            <div class="img_logo replay"></div>
+                            <div class="btn_title">重拍</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="item">
+                <div class="border_sty">
+                    <div class="item_btn " id="recvideo" onclick="OpenRecVideo(this)">
+                        <div class="img_logo video"></div>
+                        <div class="btn_title">录像</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="./js/jquery.min.js"></script>
+    <script>
+
+    </script>
+    <script src="./js/screen.js"></script>
+    <script src="./js/index.js"></script>
+
+</body>
+
+</html>
